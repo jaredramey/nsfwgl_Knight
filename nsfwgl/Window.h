@@ -8,22 +8,23 @@ This class should ONLY use GLFW!
 
 No OpenGL!!!
 *****************/
+#define GLM_FORCE_PURE
+#define GLM_SWIZZLE
+#include <glm\glm.hpp>
 
-#include <glm/glm.hpp>
+struct GLFWwindow;
 
 namespace nsfw
 {
 	class Window
 	{
-		class GLFWWindow *window;
+		GLFWwindow *window;
 		unsigned width, height;		// keep track of width height- needed for glViewport FBO integration
 
 		Window():window(nullptr),width(0),height(0) {}
 	public:
 		static Window &instance() { static Window w; return w; }
 		
-	
-
 		//create the context!
 		void init(unsigned width, unsigned height);
 		
@@ -34,11 +35,11 @@ namespace nsfw
 		void term();
 
 		// just wrap what GLFW already does
-		float	 getTime() const;
-		bool	 getKey(unsigned k) const;
-		bool	 getShouldClose() const;
-		unsigned getWidth() const;
-		unsigned getHeight() const;
+		float	  getTime()                  const;
+		bool	  getKey(unsigned k)         const;
+		bool	  getShouldClose()           const;
+		unsigned  getWidth()                 const;
+		unsigned  getHeight()                const;
 		glm::mat4 getTexelAdjustmentMatrix() const;
 	};
 }

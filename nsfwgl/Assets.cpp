@@ -1,3 +1,5 @@
+//preventing the error of an unsafe call
+#pragma warning(disable : 4996)
 #include "nsfw.h"
 
 using namespace nsfw::ASSET;
@@ -46,6 +48,14 @@ bool nsfw::Assets::makeVAO(const char * name, const struct Vertex *verts, unsign
 	ASSET_LOG(GL_HANDLE_TYPE::VAO);
 	ASSET_LOG(GL_HANDLE_TYPE::SIZE);
 	TODO_D("Should generate VBO, IBO, VAO, and SIZE using the parameters, storing them in the 'handles' map.\nThis is where vertex attributes are set!");
+
+	auto &vbo = Assets::instance();
+	auto &ibo = Assets::instance();
+	auto &vao = Assets::instance();
+	auto &size = Assets::instance();
+
+	
+
 	return false;
 }
 
@@ -53,6 +63,9 @@ bool nsfw::Assets::makeFBO(const char * name, unsigned w, unsigned h, unsigned n
 {
 	ASSET_LOG(GL_HANDLE_TYPE::FBO);
 	TODO_D("Create an FBO! Array parameters are for the render targets, which this function should also generate!\nuse makeTexture.\nNOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.");
+
+
+
 	return false;
 }
 
@@ -73,6 +86,9 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 {
 	ASSET_LOG(GL_HANDLE_TYPE::SHADER);
 	TODO_D("Load shader from a file.");
+
+
+
 	return false;
 }
 
@@ -97,7 +113,7 @@ void nsfw::Assets::init()
 	setINTERNAL(FBO,"Screen",0);
 	
 	makeVAO("Cube",CubeVerts,24,CubeTris,36);
-	makeVAO("Quad",QuadVerts,4, QuadTris,6);
+	makeVAO("Quad",QuadVerts, 4, QuadTris,6);
 	/*
 	char w[] = { 255,255,255,255 };
 	makeTexture("White", 1, 1, GL_RGB8, w);
