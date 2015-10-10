@@ -1,5 +1,10 @@
 //preventing the error of an unsafe call
 #pragma warning(disable : 4996)
+#include "ogl\gl_core_4_4.h"
+#include "glm\glm.hpp"
+#include "glm\ext.hpp"
+#include "glfw\glfw3.h"
+
 #include "nsfw.h"
 
 using namespace nsfw::ASSET;
@@ -49,12 +54,33 @@ bool nsfw::Assets::makeVAO(const char * name, const struct Vertex *verts, unsign
 	ASSET_LOG(GL_HANDLE_TYPE::SIZE);
 	TODO_D("Should generate VBO, IBO, VAO, and SIZE using the parameters, storing them in the 'handles' map.\nThis is where vertex attributes are set!");
 
-	auto &vbo = Assets::instance();
-	auto &ibo = Assets::instance();
-	auto &vao = Assets::instance();
-	auto &size = Assets::instance();
+	unsigned int m_vbo, m_ibo, m_vao, m_size = vsize;
 
-	
+	glGenVertexArrays(1, &m_vao);
+	glBindVertexArray(m_vao);
+
+	glGenBuffers(1, &m_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+	glBufferData(GL_ARRAY_BUFFER, vsize, verts, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, tsize, tris, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, vsize, GL_FLOAT, GL_FALSE, sizeof(Vertex) * vsize, tris);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, tsize, GL_FLOAT, GL_FALSE, sizeof(Vertex) * tsize, tris);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	setINTERNAL(nsfw::ASSET::VAO, (char*)name, m_vao);
+	setINTERNAL(nsfw::ASSET::VBO, (char*)name, m_vbo);
+	setINTERNAL(nsfw::ASSET::IBO, (char*)name, m_ibo);
+	setINTERNAL(nsfw::ASSET::SIZE, (char*)name, m_size);
 
 	return false;
 }
@@ -64,9 +90,46 @@ bool nsfw::Assets::makeFBO(const char * name, unsigned w, unsigned h, unsigned n
 	ASSET_LOG(GL_HANDLE_TYPE::FBO);
 	TODO_D("Create an FBO! Array parameters are for the render targets, which this function should also generate!\nuse makeTexture.\nNOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.");
 
+	unsigned int m_fbo, m_fboTexture, m_fboDepth;
+
+	glGenFramebuffers(1, &m_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+
+	glGenTextures(1, &m_fboTexture);
+	glBindTexture(GL_TEXTURE_2D, m_fboTexture);
 
 
-	return false;
+	/*for (int Textures = 0; Textures < nTextures; Textures++)
+	{*/
+		glTexStorage2D(GL_TEXTURE_2D, 1, depths[0], w, h);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_fboTexture, 0);
+
+		glGenRenderbuffers(1, &m_fboDepth);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_fboDepth);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, w, h);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_fboDepth);
+
+		setINTERNAL(nsfw::ASSET::TEXTURE, (char*)names[0], m_fboTexture);
+	
+
+	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, drawBuffers);
+
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		printf("FrameBuffer Error!\n");
+		return false;
+	}
+
+	setINTERNAL(nsfw::ASSET::FBO, (char*)name, m_fbo);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	return true;
 }
 
 bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsigned depth, const char *pixels)

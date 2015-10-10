@@ -2,6 +2,8 @@
 
 #include <ogl\gl_core_4_4.h>
 #include <glfw\glfw3.h>
+#include <glm\glm.hpp>
+#include <glm\ext.hpp>
 
 #include "nsfw.h"
 
@@ -29,6 +31,13 @@ void nsfw::Window::init(unsigned width, unsigned height)
 
 	//set window to current context
 	glfwMakeContextCurrent(window);
+
+	//load functions
+	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
+	{
+		glfwDestroyWindow(window);
+		glfwTerminate();
+	}
 
 }
 

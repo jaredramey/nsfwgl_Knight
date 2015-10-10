@@ -3,11 +3,6 @@
 #include <iostream>
 #include <cstring>
 #include <cassert>
-<<<<<<< HEAD
-
-=======
->>>>>>> bbc36ef584ac5d4f42df88ffd5d40e57ce906349
-
 
 //this garbage needs to come before the includes below
 // http://stackoverflow.com/questions/8487986/file-macro-shows-full-path
