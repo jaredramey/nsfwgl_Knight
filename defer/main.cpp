@@ -30,11 +30,11 @@ void DeferredApplication::onInit()
 
 	// Setup FBOs
 	const char *gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
-	const unsigned gpassDepths[] = { 0,0,0,0 }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
+	const unsigned gpassDepths[] = { 0x5056,0x8D13,0x8815,0x1902 }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
 	a.makeFBO("GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths);
 
 	const char *lpassTextureNames[] = { "LPassColor" };
-	const unsigned lpassDepths[] = { 0 }; // GL_RGB8
+	const unsigned lpassDepths[] = { 0x5056 }; // GL_RGB8
 	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths); 
 
 	// Load Shaders

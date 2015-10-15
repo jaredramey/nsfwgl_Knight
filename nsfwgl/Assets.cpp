@@ -90,42 +90,68 @@ bool nsfw::Assets::makeFBO(const char * name, unsigned w, unsigned h, unsigned n
 	ASSET_LOG(GL_HANDLE_TYPE::FBO);
 	TODO_D("Create an FBO! Array parameters are for the render targets, which this function should also generate!\nuse makeTexture.\nNOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.");
 
-	unsigned int m_fbo, m_fboTexture, m_fboDepth;
+	unsigned int m_fbo;
 
 	glGenFramebuffers(1, &m_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
-	glGenTextures(1, &m_fboTexture);
-	glBindTexture(GL_TEXTURE_2D, m_fboTexture);
-
-
-	/*for (int Textures = 0; Textures < nTextures; Textures++)
-	{*/
-		glTexStorage2D(GL_TEXTURE_2D, 1, depths[0], w, h);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_fboTexture, 0);
-
-		glGenRenderbuffers(1, &m_fboDepth);
-		glBindRenderbuffer(GL_RENDERBUFFER, m_fboDepth);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, w, h);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_fboDepth);
-
-		setINTERNAL(nsfw::ASSET::TEXTURE, (char*)names[0], m_fboTexture);
-	
-
-	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, drawBuffers);
-
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (status != GL_FRAMEBUFFER_COMPLETE)
+	for (int i = 0; i < nTextures; i++)
 	{
-		printf("FrameBuffer Error!\n");
-		return false;
+		makeTexture(names[i], w, h, depths[i], nullptr);
+
+		glFramebufferTexture(GL_FRAMEBUFFER, (depths[i] == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : (GL_COLOR_ATTACHMENT0 + i++), get(nsfw::ASSET::TEXTURE, names[i]), 0);
 	}
 
-	setINTERNAL(nsfw::ASSET::FBO, (char*)name, m_fbo);
+	//Unbind texture
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	GLenum drawBuffers[] = 
+	{ GL_COLOR_ATTACHMENT0,
+	  GL_COLOR_ATTACHMENT1,
+	  GL_COLOR_ATTACHMENT2,
+	  GL_COLOR_ATTACHMENT3,
+	  GL_COLOR_ATTACHMENT4,
+	  GL_COLOR_ATTACHMENT5,
+	  GL_COLOR_ATTACHMENT6,
+      GL_COLOR_ATTACHMENT7 };
+
+	glDrawBuffers(nTextures, drawBuffers);
+
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+	//super debuggy status check
+	switch (status)
+	{
+	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+		printf("Incomplete Attachment");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+		printf("Missing Attachment");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+		printf("Incomplete Draw Buffer");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+		printf("Incomplete Read Buffer");
+		break;
+	case GL_FRAMEBUFFER_UNSUPPORTED:\
+		printf("Unsuported Framebuffer");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+		printf("Incomplete Multisample");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+		printf("Incomplete Layer Targets");
+		break;
+	}
+
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		glGetError();
+		printf("FrameBuffer Error!\n");
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		return false;
+	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -134,14 +160,30 @@ bool nsfw::Assets::makeFBO(const char * name, unsigned w, unsigned h, unsigned n
 
 bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsigned depth, const char *pixels)
 {
+	unsigned int m_fboTexture;
+
 	ASSET_LOG(GL_HANDLE_TYPE::TEXTURE);
 	TODO_D("Allocate a texture using the given space/dimensions. Should work if 'pixels' is null, so that you can use this same function with makeFBO\n note that Dept will use a GL value.");
-	return false;
+
+	glGenTextures(1, &m_fboTexture);
+	glBindTexture(GL_TEXTURE_2D, m_fboTexture);
+
+	glTexStorage2D(GL_TEXTURE_2D, 1, depth, w, h);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, depth, w, h, 0, depth, GL_UNSIGNED_BYTE, pixels);
+
+	setINTERNAL(nsfw::ASSET::TEXTURE, (char*)name, m_fboTexture);
+
+	return true;
 }
 
 bool nsfw::Assets::loadTexture(const char * name, const char * path)
 {
 	TODO_D("This should load a texture from a file, using makeTexture to perform the allocation.\nUse STBI, and make sure you switch the format STBI provides to match what openGL needs!");
+
+
+
 	return false;
 }
 
