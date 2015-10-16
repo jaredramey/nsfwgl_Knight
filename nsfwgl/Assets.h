@@ -89,6 +89,10 @@ namespace nsfw
 
 		bool setINTERNAL(ASSET::GL_HANDLE_TYPE t, char *name, GL_HANDLE handle);
 	public:
+		//custom functions
+		unsigned int loadSubshader(unsigned int type, const char* path);
+		void freeSubShader(unsigned int s);
+
 		// Singleton accessor
 		static Assets &instance() { static Assets a; return a; }
 

@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\jared.ramey\Documents\GitHub\nsfwgl\dep\STB;$(SolutionDir)dep</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,7 +102,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\jared.ramey\Documents\GitHub\nsfwgl\dep\STB;$(SolutionDir)dep</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -133,6 +133,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\dep\STB\stb_image.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DefApp.h" />
     <ClInclude Include="Geometry.h" />

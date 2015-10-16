@@ -1,4 +1,6 @@
 
+#include "ogl\gl_core_4_4.h"
+
 #include "DefApp.h"
 
 #include "Geometry.h"
@@ -30,7 +32,7 @@ void DeferredApplication::onInit()
 
 	// Setup FBOs
 	const char *gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
-	const unsigned gpassDepths[] = { 0x5056,0x8D13,0x8815,0x1902 }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
+	const unsigned gpassDepths[] = { GL_RGB,GL_RGB,GL_RGB,GL_DEPTH_COMPONENT }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
 	a.makeFBO("GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths);
 
 	const char *lpassTextureNames[] = { "LPassColor" };
