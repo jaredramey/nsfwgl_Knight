@@ -361,7 +361,7 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 
 bool nsfw::Assets::loadOBJ(const char * name, const char * path)
 {
-	TODO_D("OBJ file-loading support needed.\nThis function should call makeVAO and loadTexture (if necessary), MAKE SURE TO TAKE THE OBJ DATA AND PROPERLY LINE IT UP WITH YOUR VERTEX ATTRIBUTES (or interleave the data into your vertex struct).\n");
+	//TODO_D("OBJ file-loading support needed.\nThis function should call makeVAO and loadTexture (if necessary), MAKE SURE TO TAKE THE OBJ DATA AND PROPERLY LINE IT UP WITH YOUR VERTEX ATTRIBUTES (or interleave the data into your vertex struct).\n");
 	std::vector<Vertex> verts;
 	std::vector<unsigned int> indicies;
 	std::vector<tinyobj::shape_t> shapes;
@@ -419,7 +419,7 @@ bool nsfw::Assets::loadOBJ(const char * name, const char * path)
 
 void nsfw::Assets::init()
 {
-	TODO_D("Load up some default assets here if you want.");
+	//TODO_D("Load up some default assets here if you want.");
 	
 	setINTERNAL(FBO,"Screen",0);
 	
