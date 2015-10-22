@@ -105,7 +105,7 @@ unsigned nsfw::Window::getHeight() const
 
 glm::mat4 nsfw::Window::getTexelAdjustmentMatrix() const
 {
-	TODO_D("Implemented, not tested.");
+	//TODO_D("Implemented, not tested.");
 
 	glm::vec3 texelSize = 1.0f/glm::vec3(width,height,0);
 	glm::vec3 halfTexel = texelSize * 0.5f; // bottom left
