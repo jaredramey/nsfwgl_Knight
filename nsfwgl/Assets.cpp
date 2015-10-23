@@ -185,19 +185,23 @@ bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsign
 
 	glGenTextures(1, &m_fboTexture);
 	glBindTexture(GL_TEXTURE_2D, m_fboTexture);
+	if (nullptr == pixels && depth != GL_DEPTH_COMPONENT)
+	{
+		GLenum status = glGetError();
+		assert(status == GL_NO_ERROR);
 
-	GLenum foo = GL_DEPTH_COMPONENT;
-	GLenum bar = GL_DEPTH_ATTACHMENT;
-	GLenum maxTS = GL_MAX_TEXTURE_SIZE;
-	GLenum maxATL = GL_MAX_ARRAY_TEXTURE_LAYERS;
-	GLenum eb = GL_RGB8;
+		glTexStorage2D(GL_TEXTURE_2D, 1, depth, w, h);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	GLenum a_depth = (depth == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : depth;
-
-	//glTexStorage2D(GL_TEXTURE_2D, 1, a_depth, w, h);
-	glTexImage2D(GL_TEXTURE_2D, 0, depth, w, h, 0, depth, GL_UNSIGNED_BYTE, pixels);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		assert(status == GL_NO_ERROR);
+	}
+	else   // otherwise, we're creating a normal texture
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, depth, w, h, 0, depth, GL_UNSIGNED_BYTE, pixels);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	}
 	
 
 	GLenum error = glGetError();
