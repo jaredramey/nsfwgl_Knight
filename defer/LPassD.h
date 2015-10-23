@@ -32,6 +32,8 @@ public:
 
 	void draw(const Camera &c, const LightD &l)
 	{
+		//BREADCRUMB
+		/*do you use all of these in you lightpass shaders??*/
 		setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
 		setUniform("View",       nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getView()));
 
@@ -60,6 +62,8 @@ public:
 		//TODO_D("GL BindVAO/DrawElements with quad size and vao");
 
 		glBindVertexArray(quadVAOHandle);
+		//BREADCRUMB
+		/*verify this call, not the same as in the tut. in framework all geometry made with ibo*/
 		glDrawArrays(GL_TRIANGLES, 0, quadNumtris);
 	}
 };
