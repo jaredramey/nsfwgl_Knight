@@ -19,7 +19,10 @@ public:
 	void prep() 
 	{ 
 		//TODO_D("glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc..."); 
+		//BREADCRUMB
+		/*I like to bind current buffer to 0 here just to be thorough*/
 		glClearColor(1.f, .5f, 1.f, 1);
+		/*do you have a depth buffer here??*/
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(*shader);
 	}
