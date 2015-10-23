@@ -11,7 +11,7 @@ dep/lib
 =======
 >>>>>>> bbc36ef584ac5d4f42df88ffd5d40e57ce906349
 # Custom Ignores
-Resources
+//Resources
 dep/lib/Release
 dep/lib/Debug/FBXLoader.lib
 <<<<<<< HEAD
