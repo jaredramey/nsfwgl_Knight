@@ -441,18 +441,32 @@ void nsfw::Assets::init()
 
 void nsfw::Assets::term()
 {
-	TODO();
+	//TODO();
 	for each(std::pair<AssetKey,unsigned> k in handles)
 	{
 		switch (k.first.first)
 		{
-		case VBO:		TODO_D("VBO deletion");		break;
-		case IBO:		TODO_D("IBO deletion");		break;
-		case VAO:		TODO_D("VAO deletion");		break;
-		case SHADER:	TODO_D("Shader deletion");	break;
-		case TEXTURE:	TODO_D("Texture deletion"); break;
-		case RBO:		TODO_D("RBO deletion");		break;
-		case FBO:		TODO_D("FBO deletion");		break;
+		case VBO:
+			glDeleteBuffers(1, &k.second);
+			break;
+		case IBO:
+			glDeleteBuffers(1, &k.second);
+			break;
+		case VAO:
+			glDeleteVertexArrays(1, &k.second);
+			break;
+		case SHADER:
+			glDeleteProgram(k.second);
+			break;
+		case TEXTURE:
+			glDeleteTextures(1, &k.second);
+			break;
+		case RBO:
+			glDeleteRenderbuffers(1, &k.second);
+			break;
+		case FBO:
+			glDeleteFramebuffers(1, &k.second);
+			break;
 		}
 	}
 }

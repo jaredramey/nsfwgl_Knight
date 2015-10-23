@@ -40,10 +40,10 @@ public:
 		setUniform("Model",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(g.transform));
 
 		setUniform("Diffuse",		nsfw::UNIFORM::TEX2,  g.diffuse,  0);
-		setUniform("Normal",		nsfw::UNIFORM::TEX2,  g.normal,   1);
-		setUniform("Specular",		nsfw::UNIFORM::TEX2,  g.specular, 2);
+		//setUniform("Normal",		nsfw::UNIFORM::TEX2,  g.normal,   1);
+		//setUniform("Specular",		nsfw::UNIFORM::TEX2,  g.specular, 2);
 
-		setUniform("SpecularPower", nsfw::UNIFORM::FLO1, (void*)&g.specPower);
+		//setUniform("SpecularPower", nsfw::UNIFORM::FLO1, (void*)&g.specPower);
 
 		
         /*nsfw::Assets::instance().get(g.mesh);
@@ -52,10 +52,10 @@ public:
         *g.mesh;
         *g.tris;*/
 
-		setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
+		/*setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
 		setUniform("View", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getView()));
 		setUniform("Model", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(g.transform));
-		setUniform("Diffuse", nsfw::UNIFORM::TEX2, &g.diffuse, 0);
+		setUniform("Diffuse", nsfw::UNIFORM::TEX2, &g.diffuse, 0);*/
 
 		glBindVertexArray(*g.mesh);
 		glDrawElements(GL_TRIANGLES, *g.tris, GL_UNSIGNED_INT, 0);

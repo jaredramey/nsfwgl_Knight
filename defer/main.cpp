@@ -47,25 +47,26 @@ void DeferredApplication::onInit()
 
 	// Load any other textures and geometry we want to use
 	a.loadFBX("Soulspear", "C:/Users/jared.ramey/Documents/GitHub/extraFilesAndSuch/SecondYear_IntroToOpenGL/IntroToOpenGL/IntroToOpenGL/Resources/fbx_models_misc/soulspear/soulspear.fbx");
+
+	m_camera = new Camera;
+	m_camera->StartupPerspective(45, (float)w.getWidth() / w.getHeight(), .1f, 1000.0f);
+	m_camera->SetView(glm::vec3(0, 0, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 }
 
 void DeferredApplication::onPlay()
 {
 	//TODO_D("Initialize our scene objects!");
-	m_camera    = new Camera;
 	m_light     = new LightD;
 	m_soulspear = new Geometry;
-
-	m_camera->lookAt(glm::vec3(10), glm::vec3(0), glm::vec3(0,1,0));
 
 	m_light->color      = glm::vec3(1, 1, 1);
 	m_light->direction = glm::normalize(glm::vec3(1, 1, 0));
 
 	m_soulspear->mesh	   = "Soulspear";
 	m_soulspear->tris	   = "Soulspear";
-	m_soulspear->diffuse   = "SoulspearDiffuse";	// loadFBX will need to name every handle it creates,
-	m_soulspear->normal    = "SoulspearNormal";		// These handle names may not be what your loadFBX sets 
-	m_soulspear->specular  = "SoulspearSpecular";	// them as! (Assets will report what the key names are though)
+	m_soulspear->diffuse  = "soulspear_diffuse.tga";	// loadFBX will need to name every handle it creates,
+	m_soulspear->normal   = "soulspear_normal.tga";		// These handle names may not be what your loadFBX sets 
+	m_soulspear->specular = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)
 	m_soulspear->specPower = 40.0f;
 	m_soulspear->transform = mat4(1);
 
