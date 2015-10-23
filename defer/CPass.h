@@ -19,18 +19,14 @@ public:
 	void prep() 
 	{ 
 		//TODO_D("glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc..."); 
-		//BREADCRUMB
-		/*I like to bind current buffer to 0 here just to be thorough*/
 		glClearColor(1.f, .5f, 1.f, 1);
-		/*do you have a depth buffer here??*/
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);//being thorough
+		glClear(GL_COLOR_BUFFER_BIT);//no depth
 		glUseProgram(*shader);
 	}
 
 	void post() 
 	{ 
-		//TODO_D("Unset any gl settings"); 
-		glUseProgram(0);
 	}
 
 
@@ -41,7 +37,7 @@ public:
 		//setUniform("Position",	nsfw::UNIFORM::TEX2, position, 1);
 		//setUniform("Normal",	nsfw::UNIFORM::TEX2, normal,   2);
 		//setUniform("Depth",		nsfw::UNIFORM::TEX2, depth,    3);
-		setUniform("Light",		nsfw::UNIFORM::TEX2, light,    4);
+		setUniform("Light",		nsfw::UNIFORM::TEX2, light,    1);
 
 		//setUniform("TexelScalar", nsfw::UNIFORM::MAT4, glm::value_ptr(nsfw::Window::instance().getTexelAdjustmentMatrix()));
 

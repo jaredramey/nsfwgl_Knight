@@ -53,10 +53,6 @@ bool nsfw::Assets::setINTERNAL(ASSET::GL_HANDLE_TYPE t, char *name, GL_HANDLE ha
 
 bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigned vsize,  const unsigned * tris, unsigned tsize)
 {
-	ASSET_LOG(GL_HANDLE_TYPE::VBO);
-	ASSET_LOG(GL_HANDLE_TYPE::IBO);
-	ASSET_LOG(GL_HANDLE_TYPE::VAO);
-	ASSET_LOG(GL_HANDLE_TYPE::SIZE);
 	//TODO_D("Should generate VBO, IBO, VAO, and SIZE using the parameters, storing them in the 'handles' map.\nThis is where vertex attributes are set!");
 
 	GLuint vao, vbo, ibo;
@@ -66,20 +62,12 @@ bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigne
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-	//BREADCRUMB
-	/*
-	Verify your size param...
-	*/
-	glBufferData(GL_ARRAY_BUFFER, vsize, verts, GL_STATIC_DRAW);
+	
+	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vsize, verts, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-	//BREADCRUMB
-	/*
-	Verify your size param...
-	*/
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, tsize, tris, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tsize, tris, GL_STATIC_DRAW);
 
 	//set up attribs
 	glEnableVertexAttribArray(0);//position
@@ -104,81 +92,46 @@ bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigne
 	return true;
 }
 
-bool nsfw::Assets::makeFBO(const char * name, unsigned w, unsigned h, unsigned nTextures, const char * names[], const unsigned depths[])
+bool nsfw::Assets::makeFBO(char * name, unsigned w, unsigned h, unsigned nTextures, const char * names[], const unsigned depths[])
 {
 	ASSET_LOG(GL_HANDLE_TYPE::FBO);
-	//TODO_D("Create an FBO! Array parameters are for the render targets, which this function should also generate!\nuse makeTexture.\nNOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.");
+	//TODO_D("Create an FBO! Array parameters are for the render targets, which this function should also generate!\n
+	//use makeTexture.\n
+	//NOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.");
 
-	unsigned int m_fbo;
+	// setup framebuffer
+	GLuint fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-	glGenFramebuffers(1, &m_fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-
-	GLenum attatchPoint = GL_COLOR_ATTACHMENT0;
 	std::vector<GLenum> drawBuffers;
-
+	int colorAttachmentCount = 0;
 	for (int i = 0; i < nTextures; i++)
 	{
-		makeTexture(names[i], w, h, depths[i], nullptr);
+		makeTexture(names[i], w, h, depths[i]);
 
-		//glFramebufferTexture(GL_FRAMEBUFFER, (depths[i] == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : (GL_COLOR_ATTACHMENT0 + i++), get(nsfw::ASSET::TEXTURE, names[i]), 0);
-
-		GL_HANDLE tex = get(TEXTURE, names[i]);
-
-		if (depths[i] == GL_DEPTH_COMPONENT)
+		GLenum attachment = (depths[i] == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : (GL_COLOR_ATTACHMENT0 + colorAttachmentCount);
+		glFramebufferTexture(GL_FRAMEBUFFER, attachment, get(TEXTURE, names[i]), 0);
+		if (attachment != GL_DEPTH_ATTACHMENT)
 		{
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, get(TEXTURE, names[i]), 0);
-		}
-		else
-		{
-			glFramebufferTexture2D(GL_FRAMEBUFFER, attatchPoint, GL_TEXTURE_2D, get(TEXTURE, names[i]), 0);
-			drawBuffers.push_back(attatchPoint);
-			attatchPoint++;
+			drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + colorAttachmentCount++);
 		}
 	}
-
 	glDrawBuffers(drawBuffers.size(), drawBuffers.data());
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-	//super debuggy status check
-	switch (status)
-	{
-	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-		printf("Incomplete Attachment");
-		break;
-	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-		printf("Missing Attachment");
-		break;
-	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-		printf("Incomplete Draw Buffer");
-		break;
-	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-		printf("Incomplete Read Buffer");
-		break;
-	case GL_FRAMEBUFFER_UNSUPPORTED:\
-		printf("Unsuported Framebuffer");
-		break;
-	case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-		printf("Incomplete Multisample");
-		break;
-	case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-		printf("Incomplete Layer Targets");
-		break;
-	}
-
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
-		glGetError();
-		printf("FrameBuffer Error!\n");
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		bool incompleteAttachment = status == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
+		bool invalidEnum = status == GL_INVALID_ENUM;
+		bool invalidValue = status == GL_INVALID_VALUE;
+		printf("Framebuffer Error!\n");
+		assert(false);
 		return false;
 	}
-
-	setINTERNAL(FBO, (char*)name, m_fbo);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	setINTERNAL(FBO, name, fbo);
 	return true;
 }
 
@@ -191,19 +144,23 @@ bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsign
 
 	glGenTextures(1, &m_fboTexture);
 	glBindTexture(GL_TEXTURE_2D, m_fboTexture);
+	if (nullptr == pixels && depth != GL_DEPTH_COMPONENT)
+	{
+		GLenum status = glGetError();
+		assert(status == GL_NO_ERROR);
 
-	GLenum foo = GL_DEPTH_COMPONENT;
-	GLenum bar = GL_DEPTH_ATTACHMENT;
-	GLenum maxTS = GL_MAX_TEXTURE_SIZE;
-	GLenum maxATL = GL_MAX_ARRAY_TEXTURE_LAYERS;
-	GLenum eb = GL_RGB8;
+		glTexStorage2D(GL_TEXTURE_2D, 1, depth, w, h);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	GLenum a_depth = (depth == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : depth;
-
-	//glTexStorage2D(GL_TEXTURE_2D, 1, a_depth, w, h);
-	glTexImage2D(GL_TEXTURE_2D, 0, depth, w, h, 0, depth, GL_UNSIGNED_BYTE, pixels);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		assert(status == GL_NO_ERROR);
+	}
+	else   // otherwise, we're creating a normal texture
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, depth, w, h, 0, depth, GL_UNSIGNED_BYTE, pixels);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	}
 	
 
 	GLenum error = glGetError();
@@ -252,25 +209,40 @@ bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsign
 
 bool nsfw::Assets::loadTexture(const char * name, const char * path)
 {
-	//TODO_D("This should load a texture from a file, using makeTexture to perform the allocation.\nUse STBI, and make sure you switch the format STBI provides to match what openGL needs!");
+	GLuint tex;
+
+	int imageWidth = 0, imageHeight = 0, imageFormat = 0, channels = 0;
+
+	unsigned char* data = stbi_load(path, &imageWidth, &imageHeight, &imageFormat, STBI_default);
+
+	
+	switch (imageFormat)
+	{
+	case 1: imageFormat = GL_RED; break;
+	case 2: imageFormat = GL_RG; break;
+	case 3: imageFormat = GL_RGB; break;
+	case 4: imageFormat = GL_RGBA; break;
+	}
+	//error checking
+	if (data == nullptr)
+	{
+		std::cout << "error loading texture.\n" << stbi_failure_reason();
+		assert(false);
+		return false;
+	}
+	makeTexture(name, imageWidth, imageHeight, imageFormat, (char*)data);
 
 	//BREADCRUMB
 	/*DUPLICATE CODE WITH MakeTexture FUNCTION, CALL MakeTexture when you get your parameter data.
 	NEVER DUPLICATE CODE!*/
-	
-	GLuint tex;
-
-	int imageWidth = 0, imageHeight = 0, imageForamt = 0, channels = 0;
-
-	unsigned char* data = stbi_load(path, &imageWidth, &imageHeight, &imageForamt, STBI_default);
-
+	/*
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
+	*/
 	stbi_image_free(data);
 
 	return true;
@@ -365,12 +337,12 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 	//TODO_D("FBX file-loading support needed.\nThis function should call loadTexture and makeVAO internally.\nFBX meshes each have their own name, you may use this to name the meshes as they come in.\nMAKE SURE YOU SUPPORT THE DIFFERENCE BETWEEN FBXVERTEX AND YOUR VERTEX STRUCT!\n");
 
 	FBXFile fbx;
-	fbx.initialiseOpenGLTextures();
+	//fbx.initialiseOpenGLTextures();
 
 	std::vector<Vertex> verts;
 	std::vector<unsigned> indicies;
 
-	bool success = fbx.load(path, FBXFile::UNITS_METER, true, false, false);
+	bool success = fbx.load(path, FBXFile::UNITS_CENTIMETER, true, false, true);
 	if (!success)
 	{
 		std::cout << "Error loading fbx file" << std::endl;
@@ -381,7 +353,7 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 	assert(fbx.getMeshCount() > 0);
 	for (int i = 0; i < fbx.getMeshCount(); i++)
 	{
-		FBXMeshNode* mesh = fbx.getMeshByIndex(0);
+		FBXMeshNode* mesh = fbx.getMeshByIndex(i);
 
 		for (int j = 0; j < mesh->m_vertices.size(); j++)
 		{
@@ -395,18 +367,32 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 
 		indicies = mesh->m_indices;
 
-		makeVAO(name, verts.data(), verts.size(), indicies.data(), indicies.size());
+		makeVAO(mesh->m_name.c_str(), verts.data(), verts.size(), indicies.data(), indicies.size());
 	}
 
+	//load textures
 	for (int i = 0; i < fbx.getTextureCount(); i++)
 	{
 		FBXTexture* tex = fbx.getTextureByIndex(i);
-		//BREADCRUMB
-		/*FYI if you take a look at the file object in debug, it loads the textures automatically in memory
-		and you can access it here and load makeTexture if you want, the way you are doing it here, you are
-		loading the texture files twice.  If you want to use stbi to load your textures change the fbx.load params to not 
-		auto load textures.*/
-		loadTexture(tex->name.c_str(), tex->path.c_str());
+		//loadTexture(tex->name.c_str(), tex->path.c_str());
+		assert(nullptr != tex->data && "error loading texture.\n");
+		uint imageFormat = tex->format;
+		switch (imageFormat)
+		{
+		case 1:
+			imageFormat = GL_RED;
+			break;
+		case 2:
+			imageFormat = GL_RG;
+			break;
+		case 3:
+			imageFormat = GL_RGB;
+			break;
+		case 4:
+			imageFormat = GL_RGBA;
+			break;
+		}
+		makeTexture(tex->name.c_str(), tex->width, tex->height, imageFormat, (char*)tex->data);
 	}
 
 	fbx.unload();

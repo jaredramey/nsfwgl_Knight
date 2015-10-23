@@ -33,12 +33,12 @@ void DeferredApplication::onInit()
 	// Setup FBOs
 	const char *gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
 	//if you're makefbo code is right, you use the specific ones here...
-	const unsigned gpassDepths[] = { GL_RGB,GL_RGB,GL_RGB,GL_DEPTH_COMPONENT }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
+	const unsigned gpassDepths[] = { GL_RGB8,GL_RGB32F,GL_RGB32F,GL_DEPTH_COMPONENT }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
 	a.makeFBO("GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths);
 
 	//same as above
 	const char *lpassTextureNames[] = { "LPassColor" };
-	const unsigned lpassDepths[] = { GL_RGB }; // GL_RGB8
+	const unsigned lpassDepths[] = { GL_RGB8 }; // GL_RGB8
 	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths); 
 
 	// Load Shaders
@@ -64,10 +64,10 @@ void DeferredApplication::onPlay()
 	m_soulspear = new Geometry;
 
 	m_light->color      = glm::vec3(1, 1, 1);
-	m_light->direction = glm::normalize(glm::vec3(1, 1, 0));
+	m_light->direction = glm::normalize(glm::vec3(0, 1, 0));
 
-	m_soulspear->mesh	   = "Soulspear";
-	m_soulspear->tris	   = "Soulspear";
+	m_soulspear->mesh	   = "SoulSpear_Low:SoulSpear_Low1";
+	m_soulspear->tris	   = "SoulSpear_Low:SoulSpear_Low1";
 	m_soulspear->diffuse  = "soulspear_diffuse.tga";	// loadFBX will need to name every handle it creates,
 	m_soulspear->normal   = "soulspear_normal.tga";		// These handle names may not be what your loadFBX sets 
 	m_soulspear->specular = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)

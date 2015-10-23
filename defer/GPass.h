@@ -13,10 +13,11 @@ public:
 	void prep()
 	{ 
 		//TODO_D("glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc..."); 
-		glEnable(GL_DEPTH_TEST);
+		
 
 		glBindFramebuffer(GL_FRAMEBUFFER, *fbo);
-		glClearColor(0, 0, 0, 0);
+		glEnable(GL_DEPTH_TEST);
+		glClearColor(1,1,0,1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(*shader);
@@ -25,9 +26,7 @@ public:
 	void post() 
 	{ 
 		//TODO_D("Unset any gl settings");
-		//BREADCRUMB
-		/*NOT how you disable a setting!  look up glDisable*/
-		glEnable(0);
+		glDisable(GL_DEPTH_TEST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glUseProgram(0);
 		glBindVertexArray(0);
