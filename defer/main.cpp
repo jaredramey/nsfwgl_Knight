@@ -32,21 +32,25 @@ void DeferredApplication::onInit()
 
 	// Setup FBOs
 	const char *gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
+	//if you're makefbo code is right, you use the specific ones here...
 	const unsigned gpassDepths[] = { GL_RGB,GL_RGB,GL_RGB,GL_DEPTH_COMPONENT }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
 	a.makeFBO("GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths);
 
+	//same as above
 	const char *lpassTextureNames[] = { "LPassColor" };
 	const unsigned lpassDepths[] = { GL_RGB }; // GL_RGB8
 	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths); 
 
 	// Load Shaders
-	a.loadShader("GeometryPassPhong", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/geoVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/geoFrag.txt");
-	a.loadShader("LightPassDirectional", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/lightVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/lightFrag.txt");
+	//BREADCRUMB
+	/* dude, use relative paths so you can work on other machines without issue.  vs defaults to the project dir as where things start looking so go from there.*/
+	a.loadShader("GeometryPassPhong", "./shaders/geoVert.txt", "./shaders/geoFrag.txt");
+	a.loadShader("LightPassDirectional", "./shaders/lightVert.txt", "./shaders/lightFrag.txt");
 	//a.loadShader("LightPassPoint", "/path/to/lpass/Point/vertex", "/path/to/lpass/Point/fragment");
-	a.loadShader("CompPass", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/compVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/compFrag.txt");
+	a.loadShader("CompPass", "./shaders/compVert.txt", "./shaders/compFrag.txt");
 
 	// Load any other textures and geometry we want to use
-	a.loadFBX("Soulspear", "C:/Users/jared.ramey/Documents/GitHub/extraFilesAndSuch/SecondYear_IntroToOpenGL/IntroToOpenGL/IntroToOpenGL/Resources/fbx_models_misc/soulspear/soulspear.fbx");
+	a.loadFBX("Soulspear", "./resources/models/soulspear/soulspear.fbx");
 
 	m_camera = new Camera;
 	m_camera->StartupPerspective(45, (float)w.getWidth() / w.getHeight(), .1f, 1000.0f);

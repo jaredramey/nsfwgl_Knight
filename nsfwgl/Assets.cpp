@@ -243,6 +243,10 @@ bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsign
 bool nsfw::Assets::loadTexture(const char * name, const char * path)
 {
 	//TODO_D("This should load a texture from a file, using makeTexture to perform the allocation.\nUse STBI, and make sure you switch the format STBI provides to match what openGL needs!");
+
+	//BREADCRUMB
+	/*DUPLICATE CODE WITH MakeTexture FUNCTION, CALL MakeTexture when you get your parameter data.
+	NEVER DUPLICATE CODE!*/
 	
 	GLuint tex;
 
@@ -287,9 +291,9 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
 		char* infoLog = new char[infoLogLength];
 		glGetProgramInfoLog(programID, infoLogLength, 0, infoLog);
-		printf("ERROR: Failed to link shader program!\n");
-		printf("%s\n", infoLog);
+		printf("ERROR: Failed to link shader program!\n%s\n", infoLog);
 		delete[] infoLog;
+		//BREADCRUMB
 		/*uh, no don't do this
 		instead wait until after checks clear then add it to the asset man
 		*/
@@ -307,6 +311,15 @@ unsigned int nsfw::Assets::loadSubshader(unsigned int type, const char* path)
 	std::string contents((std::istreambuf_iterator<char>(in)),
 		std::istreambuf_iterator<char>());
 
+	//BREADCRUMB
+	/*ERROR CHECKING*/
+	if (contents.length() == 0)
+	{
+		std::cerr << "Error loading shader file " << path << "\ntext:\n" << contents << std::endl;
+		assert(false);
+		return 0;
+	}
+
 	char *src = new char[contents.length() + 1];
 	strncpy(src, contents.c_str(), contents.length() + 1);
 
@@ -314,7 +327,23 @@ unsigned int nsfw::Assets::loadSubshader(unsigned int type, const char* path)
 
 	glShaderSource(shader, 1, &src, 0);
 
+	GLint success = GL_FALSE;
 	glCompileShader(shader);
+
+	//BREADCRUMB
+	/*ERROR CHECK!!*/
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (success == GL_FALSE)
+	{
+		int length = 0;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+		char* log = new char[length];
+		glGetShaderInfoLog(shader, length, 0, log);
+		std::cout << "Error compiling shader.\n" << log << std::endl;
+		delete[] log;
+		assert(false);
+	}
+
 	delete[] src;
 	return shader;
 }
@@ -335,6 +364,7 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 	if (!success)
 	{
 		std::cout << "Error loading fbx file" << std::endl;
+		assert(false);
 		return false;
 	}
 
@@ -361,6 +391,11 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 	for (int i = 0; i < fbx.getTextureCount(); i++)
 	{
 		FBXTexture* tex = fbx.getTextureByIndex(i);
+		//BREADCRUMB
+		/*FYI if you take a look at the file object in debug, it loads the textures automatically in memory
+		and you can access it here and load makeTexture if you want, the way you are doing it here, you are
+		loading the texture files twice.  If you want to use stbi to load your textures change the fbx.load params to not 
+		auto load textures.*/
 		loadTexture(tex->name.c_str(), tex->path.c_str());
 	}
 
