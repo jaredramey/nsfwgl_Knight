@@ -66,9 +66,19 @@ bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigne
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	//BREADCRUMB
+	/*
+	Verify your size param...
+	*/
 	glBufferData(GL_ARRAY_BUFFER, vsize, verts, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+	//BREADCRUMB
+	/*
+	Verify your size param...
+	*/
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, tsize, tris, GL_STATIC_DRAW);
 
 	//set up attribs
