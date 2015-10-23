@@ -43,6 +43,8 @@ public:
 		setUniform("LightColor",     nsfw::UNIFORM::TYPE::FLO3, glm::value_ptr(l.color));
 
 		setUniform("PositionMap", nsfw::UNIFORM::TYPE::TEX2, position, 0);
+
+		/*verify the data you're sending here.*/
 		setUniform("NormalMap", nsfw::UNIFORM::TYPE::TEX2, normal, 1);
 
 		//setUniform("TexelScalar",    nsfw::UNIFORM::MAT4, glm::value_ptr(nsfw::Window::instance().getTexelAdjustmentMatrix()));
