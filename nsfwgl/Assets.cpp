@@ -66,10 +66,12 @@ bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigne
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vsize, verts, GL_STATIC_DRAW);
+	
+	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vsize, verts, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, tsize, tris, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * tsize, tris, GL_STATIC_DRAW);
 
 	//set up attribs
 	glEnableVertexAttribArray(0);//position
@@ -113,6 +115,7 @@ bool nsfw::Assets::makeFBO(const char * name, unsigned w, unsigned h, unsigned n
 
 		//glFramebufferTexture(GL_FRAMEBUFFER, (depths[i] == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : (GL_COLOR_ATTACHMENT0 + i++), get(nsfw::ASSET::TEXTURE, names[i]), 0);
 
+		//for debugging i assume
 		GL_HANDLE tex = get(TEXTURE, names[i]);
 
 		if (depths[i] == GL_DEPTH_COMPONENT)
@@ -162,6 +165,7 @@ bool nsfw::Assets::makeFBO(const char * name, unsigned w, unsigned h, unsigned n
 		glGetError();
 		printf("FrameBuffer Error!\n");
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		assert(false);
 		return false;
 	}
 
@@ -242,25 +246,40 @@ bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsign
 
 bool nsfw::Assets::loadTexture(const char * name, const char * path)
 {
-	//TODO_D("This should load a texture from a file, using makeTexture to perform the allocation.\nUse STBI, and make sure you switch the format STBI provides to match what openGL needs!");
+	GLuint tex;
+
+	int imageWidth = 0, imageHeight = 0, imageFormat = 0, channels = 0;
+
+	unsigned char* data = stbi_load(path, &imageWidth, &imageHeight, &imageFormat, STBI_default);
+
+	
+	switch (imageFormat)
+	{
+	case 1: imageFormat = GL_RED; break;
+	case 2: imageFormat = GL_RG; break;
+	case 3: imageFormat = GL_RGB; break;
+	case 4: imageFormat = GL_RGBA; break;
+	}
+	//error checking
+	if (data == nullptr)
+	{
+		std::cout << "error loading texture.\n" << stbi_failure_reason();
+		assert(false);
+		return false;
+	}
+	makeTexture(name, imageWidth, imageHeight, imageFormat, (char*)data);
 
 	//BREADCRUMB
 	/*DUPLICATE CODE WITH MakeTexture FUNCTION, CALL MakeTexture when you get your parameter data.
 	NEVER DUPLICATE CODE!*/
-	
-	GLuint tex;
-
-	int imageWidth = 0, imageHeight = 0, imageForamt = 0, channels = 0;
-
-	unsigned char* data = stbi_load(path, &imageWidth, &imageHeight, &imageForamt, STBI_default);
-
+	/*
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
+	*/
 	stbi_image_free(data);
 
 	return true;
