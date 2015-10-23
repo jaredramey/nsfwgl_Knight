@@ -11,60 +11,35 @@ bool nsfw::RenderPass::setUniform(const char *name, nsfw::UNIFORM::TYPE type, co
 	//moved return to start of loop for now in order to allow program to run without error
 	//while everything else gets fleshed out
 
-	auto loc = glGetUniformLocation(*shader, name);
-
+	GLint location = glGetUniformLocation(*shader, name);
 	switch (type)
 	{
-	case nsfw::UNIFORM::FLO1: 
-		//TODO_D("Setup float uniform!");
-		
-		glProgramUniform1f(*shader, loc, *(const float*)value);
-		return true;
+	case nsfw::UNIFORM::FLO1:
+		glUniform1f(location, *(GLfloat*)value);
 		break;
-
-	case nsfw::UNIFORM::FLO3: 
-		//TODO_D("Setup vec3 uniform!");
-
-		glUniform3fv(*shader, loc, (const float*)value);
-		return true;
+	case nsfw::UNIFORM::FLO3:
+		glUniform3fv(location, 1, (GLfloat*)value);
 		break;
-
-	case nsfw::UNIFORM::FLO4: 
-		//TODO_D("Setup vec4 uniform!");
-
-		glUniform4fv(*shader, loc, (const float*)value);
-		return true;
+	case nsfw::UNIFORM::FLO4:
+		glUniform4fv(location, 1, (GLfloat*)value);
 		break;
-
-	case nsfw::UNIFORM::MAT4: 
-		//TODO_D("Setup mat4 uniform!");
-
-		glProgramUniformMatrix4fv(*shader, loc, count, GL_FALSE, (const float*)value );
-		return true;
+	case nsfw::UNIFORM::MAT4:
+		glUniformMatrix4fv(location, 1, false, (GLfloat*)value);
 		break;
-
-	case nsfw::UNIFORM::INT1: 
-		//TODO_D("Setup integer uniform!");	 
-
-		glProgramUniform1i(*shader, loc, *(const GLuint*)value);
-		return true;
+	case nsfw::UNIFORM::INT1:
+		glUniform1i(location, *(GLint*)value);
 		break;
-
-	case nsfw::UNIFORM::TEX2: 
-		//TODO_D("Setup texture2D uniform!"); 
-
+	case nsfw::UNIFORM::TEX2:
+		glUniform1i(location, count);
 		glActiveTexture(GL_TEXTURE0 + count);
-		glBindTexture(GL_TEXTURE_2D, *(const GLuint*)value);
-		glProgramUniform1i(*shader, loc, count);
-		return true;
+		glBindTexture(GL_TEXTURE_2D, *(GL_HANDLE*)value);
 		break;
-
-	default:				  
-		//TODO_D("INVALID Uniform type.");
-		std::cout << "ERROR: INVALID UNIFORM TYPE" << std::endl;
+	default:
+		std::cout << "Error setting uniform value, Bad Type.\n";
 		return false;
-		break;
 	}
+
+	return true;
 }
 
 // set GL state settings and globally accessible uniforms! Should be called before rendering occurs!

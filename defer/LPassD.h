@@ -32,10 +32,10 @@ public:
 
 	void draw(const Camera &c, const LightD &l)
 	{
-		setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
-		setUniform("View",       nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getView()));
+		//setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
+		//setUniform("View",       nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getView()));
 
-		setUniform("CameraPos", nsfw::UNIFORM::FLO3, glm::value_ptr(c.transform[3]));
+		//setUniform("CameraPos", nsfw::UNIFORM::FLO3, glm::value_ptr(c.transform[3]));
 
 		setUniform("LightDirection", nsfw::UNIFORM::TYPE::FLO3, glm::value_ptr(l.direction));
 		setUniform("LightColor",     nsfw::UNIFORM::TYPE::FLO3, glm::value_ptr(l.color));
@@ -60,6 +60,6 @@ public:
 		//TODO_D("GL BindVAO/DrawElements with quad size and vao");
 
 		glBindVertexArray(quadVAOHandle);
-		glDrawArrays(GL_TRIANGLES, 0, quadNumtris);
+		glDrawElements(GL_TRIANGLES, quadNumtris, GL_UNSIGNED_INT, 0);
 	}
 };
