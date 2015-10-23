@@ -40,18 +40,18 @@ void DeferredApplication::onInit()
 	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths); 
 
 	// Load Shaders
-	a.loadShader("GeometryPassPhong", "/path/to/gpass/Phong/vertex", "/path/to/gpass/Phong/fragment");
-	a.loadShader("LightPassDirectional", "/path/to/lpass/Directional/vertex", "/path/to/lpass/Directional/fragment");
+	a.loadShader("GeometryPassPhong", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/geoVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/geoFrag.txt");
+	a.loadShader("LightPassDirectional", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/lightVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/lightFrag.txt");
 	//a.loadShader("LightPassPoint", "/path/to/lpass/Point/vertex", "/path/to/lpass/Point/fragment");
-	a.loadShader("CompPass", "/path/to/cpass/vertex", "/path/to/cpass/fragment");
+	a.loadShader("CompPass", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/compVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/compFrag.txt");
 
 	// Load any other textures and geometry we want to use
-	a.loadFBX("Soulspear", "/path/to/souuuulspppeeeeaaar");
+	a.loadFBX("Soulspear", "C:/Users/jared.ramey/Documents/GitHub/extraFilesAndSuch/SecondYear_IntroToOpenGL/IntroToOpenGL/IntroToOpenGL/Resources/fbx_models_misc/soulspear/soulspear.fbx");
 }
 
 void DeferredApplication::onPlay()
 {
-	TODO_D("Initialize our scene objects!");
+	//TODO_D("Initialize our scene objects!");
 	m_camera    = new Camera;
 	m_light     = new LightD;
 	m_soulspear = new Geometry;
@@ -69,7 +69,7 @@ void DeferredApplication::onPlay()
 	m_soulspear->specPower = 40.0f;
 	m_soulspear->transform = mat4(1);
 
-	TODO_D("Initialize our render passes!");
+	//TODO_D("Initialize our render passes!");
 
 	m_geometryPass			= new GPass ("GeometryPassPhong", "GeometryPass");
 	m_directionalLightPass  = new LPassD("LightPassDirectional", "LightPass");
@@ -78,12 +78,12 @@ void DeferredApplication::onPlay()
 
 void DeferredApplication::onStep()
 {
-	TODO_D("Update our game objects-- IF THEY EVEN DO ANYTHING");
+	//TODO_D("Update our game objects-- IF THEY EVEN DO ANYTHING");
 	m_light->update();
 	m_camera->update();
 	m_soulspear->update();
 	
-	TODO_D("Draw all of our renderpasses!");
+	//TODO_D("Draw all of our renderpasses!");
 	m_geometryPass->prep();
 	m_geometryPass->draw(*m_camera, *m_soulspear);
 	m_geometryPass->post();

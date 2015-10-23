@@ -51,7 +51,7 @@ bool nsfw::Assets::setINTERNAL(ASSET::GL_HANDLE_TYPE t, char *name, GL_HANDLE ha
 }
 
 
-bool nsfw::Assets::makeVAO(const char * name, const struct Vertex *verts, unsigned vsize,  const unsigned * tris, unsigned tsize)
+bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigned vsize,  const unsigned * tris, unsigned tsize)
 {
 	ASSET_LOG(GL_HANDLE_TYPE::VBO);
 	ASSET_LOG(GL_HANDLE_TYPE::IBO);
@@ -202,31 +202,31 @@ bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsign
 		switch (error)
 		{
 		case GL_INVALID_ENUM:
-			printf("");
+			printf("Error: Invalid Enum");
 			break;
 
 		case GL_INVALID_VALUE:
-			printf("");
+			printf("Error: Invalid Value");
 			break;
 
 		case GL_INVALID_OPERATION:
-			printf("");
+			printf("Error: Invalid Operation");
 			break;
 
 		case GL_STACK_OVERFLOW:
-			printf("");
+			printf("Error: Stack Overlfow");
 			break;
 
 		case GL_STACK_UNDERFLOW:
-			printf("");
+			printf("Error: Stack Underflow");
 			break;
 
 		case GL_OUT_OF_MEMORY:
-			printf("");
+			printf("Error: Out of Memory");
 			break;
 
 		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			printf("");
+			printf("Error: Invalid Framebuffer Operation");
 			break;
 		}
 	}
@@ -265,7 +265,7 @@ bool nsfw::Assets::loadTexture(const char * name, const char * path)
 bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char * fpath)
 {
 	ASSET_LOG(GL_HANDLE_TYPE::SHADER);
-	TODO_D("Load shader from a file.");
+	//TODO_D("Load shader from a file.");
 
 	unsigned programID = glCreateProgram();
 	unsigned vsahder = loadSubshader(GL_VERTEX_SHADER, vpath);
@@ -323,12 +323,19 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 	//TODO_D("FBX file-loading support needed.\nThis function should call loadTexture and makeVAO internally.\nFBX meshes each have their own name, you may use this to name the meshes as they come in.\nMAKE SURE YOU SUPPORT THE DIFFERENCE BETWEEN FBXVERTEX AND YOUR VERTEX STRUCT!\n");
 
 	FBXFile fbx;
+	fbx.initialiseOpenGLTextures();
 
 	std::vector<Vertex> verts;
 	std::vector<unsigned> indicies;
 
-	fbx.load(path, FBXFile::UNITS_METER, true, false, false);
+	bool success = fbx.load(path, FBXFile::UNITS_METER, true, false, false);
+	if (!success)
+	{
+		std::cout << "Error loading fbx file" << std::endl;
+		return false;
+	}
 
+	assert(fbx.getMeshCount() > 0);
 	for (int i = 0; i < fbx.getMeshCount(); i++)
 	{
 		FBXMeshNode* mesh = fbx.getMeshByIndex(0);
@@ -345,7 +352,7 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 
 		indicies = mesh->m_indices;
 
-		makeVAO(mesh->m_name.c_str(), verts.data(), verts.size(), indicies.data(), indicies.size());
+		makeVAO(name, verts.data(), verts.size(), indicies.data(), indicies.size());
 	}
 
 	for (int i = 0; i < fbx.getTextureCount(); i++)
