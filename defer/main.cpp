@@ -36,17 +36,17 @@ void DeferredApplication::onInit()
 	a.makeFBO("GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths);
 
 	const char *lpassTextureNames[] = { "LPassColor" };
-	const unsigned lpassDepths[] = { GL_RGB }; // GL_RGB8
+	const unsigned lpassDepths[] = { GL_RGB8 }; // GL_RGB8
 	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths); 
 
 	// Load Shaders
-	a.loadShader("GeometryPassPhong", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/geoVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/geoFrag.txt");
-	a.loadShader("LightPassDirectional", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/lightVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/lightFrag.txt");
+	a.loadShader("GeometryPassPhong", "./Resources/Shaders/geoVert.txt", "./Resources/Shaders/geoFrag.txt");
+	a.loadShader("LightPassDirectional", "./Resources/Shaders/lightVert.txt", "./Resources/Shaders/lightFrag.txt");
 	//a.loadShader("LightPassPoint", "/path/to/lpass/Point/vertex", "/path/to/lpass/Point/fragment");
-	a.loadShader("CompPass", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/compVert.txt", "C:/Users/jared.ramey/Documents/GitHub/nsfwgl/Resources/Shaders/compFrag.txt");
+	a.loadShader("CompPass", "./Resources/Shaders/compVert.txt", "./Resources/Shaders/compFrag.txt");
 
 	// Load any other textures and geometry we want to use
-	a.loadFBX("Soulspear", "C:/Users/jared.ramey/Documents/GitHub/extraFilesAndSuch/SecondYear_IntroToOpenGL/IntroToOpenGL/IntroToOpenGL/Resources/fbx_models_misc/soulspear/soulspear.fbx");
+	a.loadFBX("Soulspear", "./Resources/fbx_models_misc/soulspear/soulspear.fbx");
 
 	m_camera = new Camera;
 	m_camera->StartupPerspective(45, (float)w.getWidth() / w.getHeight(), .1f, 1000.0f);
@@ -58,7 +58,7 @@ void DeferredApplication::onPlay()
 	//TODO_D("Initialize our scene objects!");
 	m_light     = new LightD;
 	m_soulspear = new Geometry;
-
+		
 	m_light->color      = glm::vec3(1, 1, 1);
 	m_light->direction = glm::normalize(glm::vec3(1, 1, 0));
 

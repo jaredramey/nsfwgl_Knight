@@ -10,7 +10,8 @@ public:
 	LPassD(const char *shaderName, const char *fboName) : RenderPass(shaderName, fboName), position("GPassPosition"), normal("GPassNormal") {}
 
 	void prep() 
-	{ 
+	{
+		nsfw::Assets::instance().CheckGLError();
 		//TODO_D("glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc...");
 		glBindFramebuffer(GL_FRAMEBUFFER, *fbo);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -22,7 +23,8 @@ public:
 	}
 
 	void post()
-	{ 
+	{
+		nsfw::Assets::instance().CheckGLError();
 		//TODO_D("Unset any gl settings"); 
 		glDisable(GL_BLEND);
 		glUseProgram(0);
@@ -32,10 +34,11 @@ public:
 
 	void draw(const Camera &c, const LightD &l)
 	{
+		nsfw::Assets::instance().CheckGLError();
 		setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
 		setUniform("View",       nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getView()));
 
-		setUniform("CameraPos", nsfw::UNIFORM::FLO3, glm::value_ptr(c.transform[3]));
+		//setUniform("CameraPos", nsfw::UNIFORM::FLO3, glm::value_ptr(c.transform[3]));
 
 		setUniform("LightDirection", nsfw::UNIFORM::TYPE::FLO3, glm::value_ptr(l.direction));
 		setUniform("LightColor",     nsfw::UNIFORM::TYPE::FLO3, glm::value_ptr(l.color));
@@ -60,6 +63,6 @@ public:
 		//TODO_D("GL BindVAO/DrawElements with quad size and vao");
 
 		glBindVertexArray(quadVAOHandle);
-		glDrawArrays(GL_TRIANGLES, 0, quadNumtris);
+		glDrawElements(GL_TRIANGLES, quadNumtris, GL_UNSIGNED_INT, 0);
 	}
 };

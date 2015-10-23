@@ -13,7 +13,7 @@ struct Camera
 	glm::mat4 transform;
 	float Near, Far, aspect, fov;
 
-	Camera() : Near(1), Far(100), aspect(800 / 600.f), fov(90) {}
+	Camera() : Near(0.1), Far(1000), aspect(800 / 600.f), fov(90) {}
 
 	void update() {}
 	void lookAt(glm::vec3 pos, glm::vec3 target, glm::vec3 up) { transform = glm::inverse(glm::lookAt(pos, target, up)); }

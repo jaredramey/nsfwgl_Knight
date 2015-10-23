@@ -92,6 +92,7 @@ namespace nsfw
 		//custom functions
 		unsigned int loadSubshader(unsigned int type, const char* path);
 		void freeSubShader(unsigned int s);
+		void CheckGLError();
 
 		// Singleton accessor
 		static Assets &instance() { static Assets a; return a; }

@@ -26,9 +26,6 @@ void nsfw::Window::init(unsigned width, unsigned height)
 {
 	//TODO_D("Should create and set an active windowing context. ONLY GLFW! No GL!");
 
-	//tell glfw to use debug stuff
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-
 	//set width and height for later use
 	this->width = width;
 	this->height = height;
@@ -38,6 +35,9 @@ void nsfw::Window::init(unsigned width, unsigned height)
 
 	//create title of the window
 	const char* title = "nsfwgl Test";
+
+	//tell glfw to use debug stuff
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
 	//create the window
 	window = glfwCreateWindow(width, height, title, nullptr, nullptr);

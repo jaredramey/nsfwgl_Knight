@@ -20,14 +20,15 @@ public:
 	{ 
 		//TODO_D("glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc..."); 
 		glClearColor(1.f, .5f, 1.f, 1);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(*shader);
 	}
 
 	void post() 
 	{ 
 		//TODO_D("Unset any gl settings"); 
-		glUseProgram(0);
+		//glUseProgram(0);
 	}
 
 

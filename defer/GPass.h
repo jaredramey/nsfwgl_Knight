@@ -11,7 +11,8 @@ class GPass : public nsfw::RenderPass
 
 public:	
 	void prep()
-	{ 
+	{
+		nsfw::Assets::instance().CheckGLError();
 		//TODO_D("glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc..."); 
 		glEnable(GL_DEPTH_TEST);
 
@@ -23,9 +24,10 @@ public:
 	
 	}
 	void post() 
-	{ 
+	{
+		nsfw::Assets::instance().CheckGLError();
 		//TODO_D("Unset any gl settings");
-		glEnable(0);
+		glDisable(GL_DEPTH_TEST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glUseProgram(0);
 		glBindVertexArray(0);
@@ -35,6 +37,7 @@ public:
 
 	void draw(const Camera &c, const Geometry &g)	
 	{
+		nsfw::Assets::instance().CheckGLError();
 		setUniform("Projection",	nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
 		setUniform("View",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getView()));
 		setUniform("Model",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(g.transform));

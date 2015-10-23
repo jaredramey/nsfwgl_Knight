@@ -11,42 +11,43 @@ bool nsfw::RenderPass::setUniform(const char *name, nsfw::UNIFORM::TYPE type, co
 	//moved return to start of loop for now in order to allow program to run without error
 	//while everything else gets fleshed out
 
-	auto loc = glGetUniformLocation(*shader, name);
+	GLuint loc = glGetUniformLocation(*shader, name);
+	GLuint val = *(const GLuint*)value;
 
 	switch (type)
 	{
 	case nsfw::UNIFORM::FLO1: 
 		//TODO_D("Setup float uniform!");
 		
-		glProgramUniform1f(*shader, loc, *(const float*)value);
+		glUniform1f(loc, *(const float*)value);
 		return true;
 		break;
 
 	case nsfw::UNIFORM::FLO3: 
 		//TODO_D("Setup vec3 uniform!");
 
-		glUniform3fv(*shader, loc, (const float*)value);
+		glUniform3fv(loc, 1, (const float*)value);
 		return true;
 		break;
 
 	case nsfw::UNIFORM::FLO4: 
 		//TODO_D("Setup vec4 uniform!");
 
-		glUniform4fv(*shader, loc, (const float*)value);
+		glUniform4fv(loc, 1, (const float*)value);
 		return true;
 		break;
 
 	case nsfw::UNIFORM::MAT4: 
 		//TODO_D("Setup mat4 uniform!");
 
-		glProgramUniformMatrix4fv(*shader, loc, count, GL_FALSE, (const float*)value );
+		glUniformMatrix4fv(loc, count, GL_FALSE, (const float*)value );
 		return true;
 		break;
 
 	case nsfw::UNIFORM::INT1: 
 		//TODO_D("Setup integer uniform!");	 
 
-		glProgramUniform1i(*shader, loc, *(const GLuint*)value);
+		glUniform1i(loc, *(const GLuint*)value);
 		return true;
 		break;
 
@@ -55,7 +56,7 @@ bool nsfw::RenderPass::setUniform(const char *name, nsfw::UNIFORM::TYPE type, co
 
 		glActiveTexture(GL_TEXTURE0 + count);
 		glBindTexture(GL_TEXTURE_2D, *(const GLuint*)value);
-		glProgramUniform1i(*shader, loc, count);
+		glUniform1i(loc, count);
 		return true;
 		break;
 

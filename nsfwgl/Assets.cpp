@@ -1,5 +1,5 @@
 //preventing the error of an unsafe call
-#pragma warning(disable : 4996)
+//#pragma warning(disable : 4996)
 #include "ogl\gl_core_4_4.h"
 #include "glm\glm.hpp"
 #include "glm\ext.hpp"
@@ -66,10 +66,17 @@ bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigne
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	
+
+	glGetError();
 	glBufferData(GL_ARRAY_BUFFER, vsize, verts, GL_STATIC_DRAW);
+	CheckGLError();
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+	glGetError();
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, tsize, tris, GL_STATIC_DRAW);
+	CheckGLError();
 
 	//set up attribs
 	glEnableVertexAttribArray(0);//position
@@ -104,26 +111,17 @@ bool nsfw::Assets::makeFBO(const char * name, unsigned w, unsigned h, unsigned n
 	glGenFramebuffers(1, &m_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
-	GLenum attatchPoint = GL_COLOR_ATTACHMENT0;
 	std::vector<GLenum> drawBuffers;
-
+	int colorAttachmentCount = 0;
 	for (int i = 0; i < nTextures; i++)
 	{
 		makeTexture(names[i], w, h, depths[i], nullptr);
 
-		//glFramebufferTexture(GL_FRAMEBUFFER, (depths[i] == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : (GL_COLOR_ATTACHMENT0 + i++), get(nsfw::ASSET::TEXTURE, names[i]), 0);
-
-		GL_HANDLE tex = get(TEXTURE, names[i]);
-
-		if (depths[i] == GL_DEPTH_COMPONENT)
+		GLenum attachment = (depths[i] == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : (GL_COLOR_ATTACHMENT0 + colorAttachmentCount);
+		glFramebufferTexture(GL_FRAMEBUFFER, attachment, get(TEXTURE, names[i]), 0);
+		if (attachment != GL_DEPTH_ATTACHMENT)
 		{
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, get(TEXTURE, names[i]), 0);
-		}
-		else
-		{
-			glFramebufferTexture2D(GL_FRAMEBUFFER, attatchPoint, GL_TEXTURE_2D, get(TEXTURE, names[i]), 0);
-			drawBuffers.push_back(attatchPoint);
-			attatchPoint++;
+			drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + colorAttachmentCount++);
 		}
 	}
 
@@ -182,60 +180,34 @@ bool nsfw::Assets::makeTexture(const char * name, unsigned w, unsigned h, unsign
 	glGenTextures(1, &m_fboTexture);
 	glBindTexture(GL_TEXTURE_2D, m_fboTexture);
 
-	GLenum foo = GL_DEPTH_COMPONENT;
-	GLenum bar = GL_DEPTH_ATTACHMENT;
-	GLenum maxTS = GL_MAX_TEXTURE_SIZE;
-	GLenum maxATL = GL_MAX_ARRAY_TEXTURE_LAYERS;
-	GLenum eb = GL_RGB8;
-
-	GLenum a_depth = (depth == GL_DEPTH_COMPONENT) ? GL_DEPTH_ATTACHMENT : depth;
-
-	//glTexStorage2D(GL_TEXTURE_2D, 1, a_depth, w, h);
-	glTexImage2D(GL_TEXTURE_2D, 0, depth, w, h, 0, depth, GL_UNSIGNED_BYTE, pixels);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	
-
-	GLenum error = glGetError();
-	if(error != GL_NO_ERROR)
+	if (nullptr == pixels && depth != GL_DEPTH_COMPONENT)
 	{
-		switch (error)
-		{
-		case GL_INVALID_ENUM:
-			printf("Error: Invalid Enum");
-			break;
+		GLenum status = glGetError();
+		assert(status == GL_NO_ERROR);
 
-		case GL_INVALID_VALUE:
-			printf("Error: Invalid Value");
-			break;
+		glTexStorage2D(GL_TEXTURE_2D, 1, depth, w, h);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		case GL_INVALID_OPERATION:
-			printf("Error: Invalid Operation");
-			break;
+		assert(status == GL_NO_ERROR);
+	}
+	else   // otherwise, we're creating a normal texture
+	{
+		GLenum status = glGetError();
+		assert(status == GL_NO_ERROR);
 
-		case GL_STACK_OVERFLOW:
-			printf("Error: Stack Overlfow");
-			break;
+		glTexImage2D(GL_TEXTURE_2D, 0, depth, w, h, 0, depth, GL_UNSIGNED_BYTE, pixels);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		case GL_STACK_UNDERFLOW:
-			printf("Error: Stack Underflow");
-			break;
-
-		case GL_OUT_OF_MEMORY:
-			printf("Error: Out of Memory");
-			break;
-
-		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			printf("Error: Invalid Framebuffer Operation");
-			break;
-		}
+		assert(status == GL_NO_ERROR);
 	}
 
-	setINTERNAL(nsfw::ASSET::TEXTURE, (char*)name, m_fboTexture);
-
+	CheckGLError();
 
 	//Unbind texture
 	glBindTexture(GL_TEXTURE_2D, 0);
+	setINTERNAL(TEXTURE, (char *)name, m_fboTexture);
 
 	return true;
 }
@@ -279,7 +251,6 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 	freeSubShader(fshader);
 	glGetProgramiv(programID, GL_LINK_STATUS, &success);
 
-	setINTERNAL(SHADER, (char *)name, programID);
 
 	if (success == GL_FALSE)
 	{
@@ -290,10 +261,11 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 		printf("ERROR: Failed to link shader program!\n");
 		printf("%s\n", infoLog);
 		delete[] infoLog;
-		setINTERNAL(SHADER, (char *)name, 0);
+		//setINTERNAL(SHADER, (char *)name, 0);
 	}
 
-	return false;
+	setINTERNAL(SHADER, (char *)name, programID);
+	return true;
 }
 
 void nsfw::Assets::freeSubShader(unsigned int s) { glDeleteShader(s); }
@@ -304,15 +276,13 @@ unsigned int nsfw::Assets::loadSubshader(unsigned int type, const char* path)
 	std::string contents((std::istreambuf_iterator<char>(in)),
 		std::istreambuf_iterator<char>());
 
-	char *src = new char[contents.length() + 1];
-	strncpy(src, contents.c_str(), contents.length() + 1);
+	const char *src = contents.c_str();
 
 	unsigned int shader = glCreateShader(type);
 
 	glShaderSource(shader, 1, &src, 0);
 
 	glCompileShader(shader);
-	delete[] src;
 	return shader;
 }
 
@@ -323,7 +293,7 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 	//TODO_D("FBX file-loading support needed.\nThis function should call loadTexture and makeVAO internally.\nFBX meshes each have their own name, you may use this to name the meshes as they come in.\nMAKE SURE YOU SUPPORT THE DIFFERENCE BETWEEN FBXVERTEX AND YOUR VERTEX STRUCT!\n");
 
 	FBXFile fbx;
-	fbx.initialiseOpenGLTextures();
+	//fbx.initialiseOpenGLTextures();
 
 	std::vector<Vertex> verts;
 	std::vector<unsigned> indicies;
@@ -358,7 +328,23 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 	for (int i = 0; i < fbx.getTextureCount(); i++)
 	{
 		FBXTexture* tex = fbx.getTextureByIndex(i);
-		loadTexture(tex->name.c_str(), tex->path.c_str());
+		switch (tex->format) {
+		case 1:
+			makeTexture(tex->name.c_str(), tex->width, tex->height,  GL_RG, (char*)tex->data);
+			break;
+		case 2:
+			makeTexture(tex->name.c_str(), tex->width, tex->height, GL_RG, (char*)tex->data);
+			break;
+		case 3:
+			makeTexture(tex->name.c_str(), tex->width, tex->height, GL_RGB, (char*)tex->data);
+			break;
+		case 4:
+			makeTexture(tex->name.c_str(), tex->width, tex->height, GL_RGBA, (char*)tex->data);
+			break;
+		default:
+			assert(false && "Invalid texture depth found while loading FBX object.");
+			break;
+		}
 	}
 
 	fbx.unload();
@@ -468,6 +454,16 @@ void nsfw::Assets::term()
 			glDeleteFramebuffers(1, &k.second);
 			break;
 		}
+	}
+}
+
+void nsfw::Assets::CheckGLError()
+{
+	unsigned error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		std::cout << "ERRROR: " << std::hex << error << std::endl;
+		assert(false);
 	}
 }
 
