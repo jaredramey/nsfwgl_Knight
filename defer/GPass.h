@@ -25,6 +25,8 @@ public:
 	void post() 
 	{ 
 		//TODO_D("Unset any gl settings");
+		//BREADCRUMB
+		/*NOT how you disable a setting!  look up glDisable*/
 		glEnable(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glUseProgram(0);
