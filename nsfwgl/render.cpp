@@ -12,6 +12,12 @@ bool nsfw::RenderPass::setUniform(const char *name, nsfw::UNIFORM::TYPE type, co
 	//while everything else gets fleshed out
 
 	auto loc = glGetUniformLocation(*shader, name);
+	//BREADCRUMB
+	/*
+	mixing glProgramUniform and glUniform ?? why do this?
+	use one or the other, I suggest glUniform like god intended...
+	*/
+
 
 	switch (type)
 	{
