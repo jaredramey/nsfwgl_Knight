@@ -279,7 +279,7 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 	freeSubShader(fshader);
 	glGetProgramiv(programID, GL_LINK_STATUS, &success);
 
-	setINTERNAL(SHADER, (char *)name, programID);
+	
 
 	if (success == GL_FALSE)
 	{
@@ -290,10 +290,13 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 		printf("ERROR: Failed to link shader program!\n");
 		printf("%s\n", infoLog);
 		delete[] infoLog;
-		setINTERNAL(SHADER, (char *)name, 0);
+		/*uh, no don't do this
+		instead wait until after checks clear then add it to the asset man
+		*/
+		//setINTERNAL(SHADER, (char *)name, 0);
 	}
-
-	return false;
+	setINTERNAL(SHADER, (char *)name, programID);
+	return true;
 }
 
 void nsfw::Assets::freeSubShader(unsigned int s) { glDeleteShader(s); }

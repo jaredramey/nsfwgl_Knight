@@ -1,0 +1,35 @@
+#version 410
+
+in vec2 vTexCoord;
+
+out vec3 LightOut;
+
+uniform vec3 CameraPos;
+
+uniform vec3 LightDirection;
+uniform vec3 LightColor;
+
+uniform sampler2D PositionMap;
+uniform sampler2D NormalMap;
+
+void main()
+{
+	//vec3 normal = normalize(texture(NormalMap, vTexCoord)).xyz;
+	//float specularPow = length(texture(NormalMap, vTexCoord));
+	//vec3 position = texture(PositionMap, vTexCoord).xyz;
+	//float lambert = max(0.0f, dot(normal, -LightDirection));
+	//vec3 diffuse = LightColor * lambert;
+	//vec3 eye = normalize(CameraPos * -position);
+	//vec3 R = normalize(reflect(LightDirection, normal));
+	//float specTerm = pow(max(0.0f, dot(R, eye)), specularPow);
+	//vec3 specular = LightColor * specTerm;
+	//specular = clamp(specular, 0.0f, 1.0f);
+	//LightOut = (specular + diffuse);
+	
+	vec3 normal = normalize(texture(NormalMap, vTexCoord).xyz);
+	vec3 position = texture(PositionMap, vTexCoord).xyz;
+
+	float d = max(0, dot( normal, LightDirection)); 
+
+	LightOut = vec3(LightColor * d);
+}
