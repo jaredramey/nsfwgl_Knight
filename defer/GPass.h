@@ -25,7 +25,7 @@ public:
 	void post() 
 	{ 
 		//TODO_D("Unset any gl settings");
-		glEnable(0);
+		glDisable(GL_DEPTH_TEST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glUseProgram(0);
 		glBindVertexArray(0);
