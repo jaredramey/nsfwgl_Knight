@@ -7,9 +7,27 @@
 
 #include "nsfw.h"
 
+//this is for glfw debug 
+void APIENTRY oglErrorDefaultCallback(GLenum source,
+	GLenum type,
+	GLuint id,
+	GLenum severity,
+	GLsizei length,
+	const GLchar *message,
+	const void *userParam)
+{
+	// if 'GL_DEBUG_OUTPUT_SYNCHRONOUS' is enabled, you can place a
+	// breakpoint here and the callstack should reflect the problem location!
+
+	std::cerr << message << std::endl;
+}
+
 void nsfw::Window::init(unsigned width, unsigned height)
 {
 	//TODO_D("Should create and set an active windowing context. ONLY GLFW! No GL!");
+
+	//tell glfw to use debug stuff
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
 	//set width and height for later use
 	this->width = width;
@@ -39,6 +57,21 @@ void nsfw::Window::init(unsigned width, unsigned height)
 		glfwTerminate();
 	}
 
+	//this is for glfw debug 
+#ifdef _DEBUG
+	if (glDebugMessageCallback)
+	{
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(oglErrorDefaultCallback, nullptr);
+
+		GLuint unusedIDs = 0;
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIDs, true);
+	}
+	else
+	{
+		std::cerr << "Failed to subscribe to glDebugMessageCallback." << std::endl;
+	}
+#endif
 }
 
 void nsfw::Window::step()
