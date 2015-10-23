@@ -12,7 +12,7 @@ namespace nsfw
 		virtual void onPlay() { TODO_D("OVERRIDE: Setup/reset the game state (or do nothing)!"); };
 		virtual void onStep() { TODO_D("OVERRIDE: Render Passes should draw, objects should update!"); };
 
-		void init(int width = 800, int height = 600, const char *name = "Not Suited For Work")
+		void init(int width = 1280, int height = 720, const char *name = "Not Suited For Work")
 		{
 			Window::instance().init(width, height);
 			Assets::instance().init();

@@ -120,7 +120,7 @@ namespace nsfw
 		bool makeVAO(const char *name, const struct Vertex *verts, unsigned vsize, const unsigned *tris, unsigned tsize);
 
 		// should call makeTexture nTextures number of times
-		bool makeFBO(const char *name, unsigned w, unsigned h, unsigned nTextures, const char *names[], const unsigned depths[]);
+		bool makeFBO(char *name, unsigned w, unsigned h, unsigned nTextures, const char *names[], const unsigned depths[]);
 
 		// should allocate space for a texture, but not necessarily set its data
 		bool makeTexture(const char *name, unsigned w, unsigned h, unsigned depth, const char *pixels = nullptr);

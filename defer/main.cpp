@@ -64,10 +64,10 @@ void DeferredApplication::onPlay()
 	m_soulspear = new Geometry;
 
 	m_light->color      = glm::vec3(1, 1, 1);
-	m_light->direction = glm::normalize(glm::vec3(1, 1, 0));
+	m_light->direction = glm::normalize(glm::vec3(0, 1, 0));
 
-	m_soulspear->mesh	   = "Soulspear";
-	m_soulspear->tris	   = "Soulspear";
+	m_soulspear->mesh	   = "SoulSpear_Low:SoulSpear_Low1";
+	m_soulspear->tris	   = "SoulSpear_Low:SoulSpear_Low1";
 	m_soulspear->diffuse  = "soulspear_diffuse.tga";	// loadFBX will need to name every handle it creates,
 	m_soulspear->normal   = "soulspear_normal.tga";		// These handle names may not be what your loadFBX sets 
 	m_soulspear->specular = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)

@@ -27,8 +27,6 @@ public:
 
 	void post() 
 	{ 
-		//TODO_D("Unset any gl settings"); 
-		glUseProgram(0);
 	}
 
 
