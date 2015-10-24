@@ -19,6 +19,9 @@
     <Filter Include="Header Files\Objects">
       <UniqueIdentifier>{68e26eeb-b2f2-4190-a60c-0f6e40daaa90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\shaders">
+      <UniqueIdentifier>{61ff1580-9ce3-4401-a39f-3914c72c3123}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -53,5 +56,25 @@
     <ClInclude Include="..\dep\STB\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="shaders\compFrag.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+    <Text Include="shaders\compVert.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+    <Text Include="shaders\geoFrag.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+    <Text Include="shaders\geoVert.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+    <Text Include="shaders\lightFrag.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+    <Text Include="shaders\lightVert.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
   </ItemGroup>
 </Project>

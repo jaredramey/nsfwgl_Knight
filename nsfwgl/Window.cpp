@@ -114,14 +114,7 @@ bool nsfw::Window::getKey(unsigned k) const
 }
 
 bool nsfw::Window::getShouldClose() const
-{
-	//TODO();
-
-	if (getKey(GLFW_KEY_ESCAPE))
-		return true;
-
-	else
-		return false;
+{return glfwWindowShouldClose(window);
 }
 
 unsigned nsfw::Window::getWidth() const

@@ -1,12 +1,12 @@
 //preventing the error of an unsafe call
-#pragma warning(disable : 4996)
-#include "ogl\gl_core_4_4.h"
-#include "glm\glm.hpp"
-#include "glm\ext.hpp"
-#include "glfw\glfw3.h"
-#include "STB\stb_image.h"
-#include "FBX\FBXFile.h"
-#include "TOL\tiny_obj_loader.h"
+//#pragma warning(disable : 4996)
+//#include "ogl\gl_core_4_4.h"
+//#include "glm\glm.hpp"
+//#include "glm\ext.hpp"
+//#include "glfw\glfw3.h"
+//#include "STB\stb_image.h"
+//#include "FBX\FBXFile.h"
+//#include "TOL\tiny_obj_loader.h"
 
 
 #include "nsfw.h"
@@ -303,7 +303,7 @@ unsigned int nsfw::Assets::loadSubshader(unsigned int type, const char* path)
 	}
 
 	char *src = new char[contents.length() + 1];
-	strncpy(src, contents.c_str(), contents.length() + 1);
+	strncpy_s(src, contents.length() + 1, contents.c_str(), contents.length());
 
 	unsigned int shader = glCreateShader(type);
 

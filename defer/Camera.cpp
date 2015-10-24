@@ -1,5 +1,20 @@
 #include "Camera.h"
 
+void Camera::Slide(const float hDistance, const float vDistance)
+{
+	mPosition += glm::vec3(hDistance, vDistance, 0);
+	mTarget += glm::vec3(hDistance, vDistance, 0);
+	UpdateView();
+}
+
+void Camera::Move(const float distance)
+{
+	glm::vec3 direction = glm::normalize(mTarget - mPosition);
+	mPosition += distance * direction;
+	mTarget += distance * direction;
+	UpdateView();
+}
+
 bool Camera::StartupPerspective(const float fov, const float aspectRatio, const float near, const float far)
 {
 	mProjectionTransform = glm::perspective(fov, aspectRatio, near, far);
@@ -7,15 +22,28 @@ bool Camera::StartupPerspective(const float fov, const float aspectRatio, const 
 	return true;
 }
 
-bool Camera::SetView(const glm::vec3 position, const glm::vec3 target, const glm::vec3 up)
+void Camera::Update(const float deltaTime)
 {
-	mPosition = position;
-	mTarget = target;
-	mUpVector = up;
+}
 
-	UpdateView();
+const glm::mat4 Camera::GetWorldTransform()
+{
+	return glm::inverse(mViewTransform);
+}
 
-	return true;
+glm::mat4 Camera::GetView()
+{
+	return mViewTransform;
+}
+
+glm::mat4 Camera::GetProjection()
+{
+	return mProjectionTransform;
+}
+
+glm::mat4 Camera::GetViewProjection()
+{
+	return mProjectionViewTransform;
 }
 
 void Camera::UpdateProjectViewTransform()
@@ -29,3 +57,15 @@ void Camera::UpdateView()
 	mWorldTransform = glm::inverse(mViewTransform);
 	UpdateProjectViewTransform();
 }
+
+bool Camera::SetView(const glm::vec3 position, const glm::vec3 target, const glm::vec3 up)
+{
+	mPosition = position;
+	mTarget = target;
+	mUpVector = up;
+
+	UpdateView();
+
+	return true;
+}
+
