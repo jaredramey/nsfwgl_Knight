@@ -28,7 +28,7 @@ public:
 	void post() 
 	{ 
 		//TODO_D("Unset any gl settings"); 
-		//glUseProgram(0);
+		glUseProgram(0);
 	}
 
 
@@ -39,7 +39,7 @@ public:
 		//setUniform("Position",	nsfw::UNIFORM::TEX2, position, 1);
 		//setUniform("Normal",	nsfw::UNIFORM::TEX2, normal,   2);
 		//setUniform("Depth",		nsfw::UNIFORM::TEX2, depth,    3);
-		setUniform("Light",		nsfw::UNIFORM::TEX2, light,    4);
+		setUniform("Light",		nsfw::UNIFORM::TEX2, light,    1);
 
 		//setUniform("TexelScalar", nsfw::UNIFORM::MAT4, glm::value_ptr(nsfw::Window::instance().getTexelAdjustmentMatrix()));
 

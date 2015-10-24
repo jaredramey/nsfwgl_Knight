@@ -81,7 +81,7 @@ void DeferredApplication::onStep()
 {
 	//TODO_D("Update our game objects-- IF THEY EVEN DO ANYTHING");
 	m_light->update();
-	m_camera->update();
+	m_camera->Update(0);
 	m_soulspear->update();
 	
 	//TODO_D("Draw all of our renderpasses!");
