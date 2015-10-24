@@ -33,11 +33,11 @@ void nsfw::Window::init(unsigned width, unsigned height)
 	//Initialize glfw
 	glfwInit();
 
-	//create title of the window
-	const char* title = "nsfwgl Test";
-
 	//tell glfw to use debug stuff
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+
+	//create title of the window
+	const char* title = "nsfwgl Test";
 
 	//create the window
 	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
