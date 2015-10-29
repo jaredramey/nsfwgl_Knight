@@ -77,6 +77,7 @@ void DeferredApplication::onPlay()
 	//TODO_D("Initialize our render passes!");
 
 	m_geometryPass			= new GPass ("GeometryPassPhong", "GeometryPass");
+	m_spotLightPass			= new LPassD("", "");
 	m_directionalLightPass  = new LPassD("LightPassDirectional", "LightPass");
 	m_compositePass			= new CPass ("CompPass", "Screen"); // Screen is defined in nsfw::Assets::init()
 }

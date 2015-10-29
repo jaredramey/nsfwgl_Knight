@@ -19,6 +19,7 @@ class DeferredApplication : public nsfw::Application
 	CPass   *m_compositePass;
 	GPass   *m_geometryPass;
 	LPassD  *m_directionalLightPass;
+	LPassD  *m_spotLightPass;
 
 public:
 	void onInit();

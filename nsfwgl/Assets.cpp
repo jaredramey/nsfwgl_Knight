@@ -448,7 +448,7 @@ bool nsfw::Assets::loadOBJ(const char * name, const char * path)
 				y = mesh.texcoords[UVIndex++];
 				vertex.texCoord = vec2(x, y);
 			}
-			
+			vertex.texCoord = vec2(0);
 			verts.push_back(vertex);
 		}
 		indicies = mesh.indices;
