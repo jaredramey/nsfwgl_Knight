@@ -1,0 +1,56 @@
+#version 410
+
+in vec2 vTexCoord;
+
+out vec3 LightOutput;
+
+struct Attenuation
+{
+	float kC;
+	float kL;
+	float kQ;
+};
+
+struct Light
+{
+	vec3 Position;
+	vec3 Color;
+	Attenuation attenuation;
+};
+
+vec3 GetLightDirection(vec3 lightPosition, vec3 vertexPosition)
+{
+	return normalize(vertexPosition - lightPosition);
+}
+
+float AttenuationFactor(vec3 cameraPosition, Light light)
+{
+	float distance = distance(cameraPosition, light.Position);
+	return 1 / (light.attenuation.kC + light.attenuation.kL * distance + light.attenuation.kQ * distance * distance);
+}
+
+uniform Light pointLight;
+
+uniform vec3 CameraPosition;
+uniform float specPower;
+
+uniform vec3 ambient;
+
+uniform sampler2D positionTexture;
+uniform sampler2D normalTexture;
+
+void main()
+{
+	vec3 normal = normalize(texture(normalTexture, vTexCoord).xyz);
+	vec3 position = texture(positionTexture, vTexCoord).xyz;
+	
+	float diffuse = max(0, dot(normal, -GetLightDirection(pointLight.Position, position)));
+	vec3 eye = normalize(position.xyz - CameraPosition);
+	vec3 reflect = reflect(-GetLightDirection(pointLight.Position, position), normal.xyz);
+	float specular = max(0, dot(eye, reflect));
+	specular = pow(specular, specPower);
+	
+	float attFactor = AttenuationFactor(CameraPosition, pointLight);
+	
+	LightOutput = ambient + attFactor * ((pointLight.Color * diffuse) + (pointLight.Color * specular));
+}
