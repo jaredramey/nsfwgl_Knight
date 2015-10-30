@@ -51,6 +51,7 @@ void DeferredApplication::onInit()
 
 	// Load any other textures and geometry we want to use
 	a.loadFBX("Soulspear", "./resources/models/soulspear/soulspear.fbx");
+	//a.loadOBJ("Bunny", "");
 
 	m_camera = new Camera;
 	m_camera->StartupPerspective(45, (float)w.getWidth() / w.getHeight(), .1f, 1000.0f);

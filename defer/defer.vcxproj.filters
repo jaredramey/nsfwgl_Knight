@@ -56,6 +56,9 @@
     <ClInclude Include="..\dep\STB\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SPass.h">
+      <Filter>Header Files\Passes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="shaders\compFrag.txt">
