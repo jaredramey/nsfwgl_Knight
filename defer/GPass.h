@@ -13,8 +13,6 @@ public:
 	void prep()
 	{ 
 		//TODO_D("glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc..."); 
-		
-
 		glBindFramebuffer(GL_FRAMEBUFFER, *fbo);
 		glEnable(GL_DEPTH_TEST);
 		glClearColor(0,0,0,0);
@@ -41,28 +39,8 @@ public:
 		setUniform("Model",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(g.transform));
 
 		setUniform("Diffuse",		nsfw::UNIFORM::TEX2,  g.diffuse,  0);
-		//setUniform("Normal",		nsfw::UNIFORM::TEX2,  g.normal,   1);
-		//setUniform("Specular",		nsfw::UNIFORM::TEX2,  g.specular, 2);
-
-		//setUniform("SpecularPower", nsfw::UNIFORM::FLO1, (void*)&g.specPower);
-
-		
-        /*nsfw::Assets::instance().get(g.mesh);
-        nsfw::Assets::instance().get(g.tris);
-
-        *g.mesh;
-        *g.tris;*/
-
-		/*setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
-		setUniform("View", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getView()));
-		setUniform("Model", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(g.transform));
-		setUniform("Diffuse", nsfw::UNIFORM::TEX2, &g.diffuse, 0);*/
 
 		glBindVertexArray(*g.mesh);
 		glDrawElements(GL_TRIANGLES, *g.tris, GL_UNSIGNED_INT, 0);
-
-		//TODO_D("bindVAO and Draw Elements!");
-
-
 	}
 };

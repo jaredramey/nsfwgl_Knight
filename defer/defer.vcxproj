@@ -142,7 +142,8 @@
     <ClInclude Include="CPass.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LPassD.h" />
-    <ClInclude Include="SPass.h" />
+    <ClInclude Include="SPassPost.h" />
+    <ClInclude Include="SPassPre.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="shaders\compFrag.txt" />

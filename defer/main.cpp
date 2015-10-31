@@ -10,6 +10,8 @@
 #include "GPass.h"
 #include "CPass.h"
 #include "LPassD.h"
+#include "SPassPre.h"
+#include "SPassPost.h"
 
 using namespace nsfw;
 
@@ -39,15 +41,20 @@ void DeferredApplication::onInit()
 	//same as above
 	const char *lpassTextureNames[] = { "LPassColor" };
 	const unsigned lpassDepths[] = { GL_RGB8 }; // GL_RGB8
-	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths); 
+	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths);
+
+	//For shadow pass
+	const char *spassTextureNames[] = { "LPassDepth" };
+	const unsigned spassDepths[] = { GL_DEPTH_COMPONENT }; // GL_RGB8
+	a.makeFBO("ShadowPass", w.getWidth(), w.getHeight(), 1, spassTextureNames, spassDepths);
 
 	// Load Shaders
-	//BREADCRUMB
-	/* dude, use relative paths so you can work on other machines without issue.  vs defaults to the project dir as where things start looking so go from there.*/
 	a.loadShader("GeometryPassPhong", "./shaders/geoVert.txt", "./shaders/geoFrag.txt");
 	a.loadShader("LightPassDirectional", "./shaders/lightVert.txt", "./shaders/lightFrag.txt");
 	//a.loadShader("LightPassPoint", "/path/to/lpass/Point/vertex", "/path/to/lpass/Point/fragment");
 	a.loadShader("CompPass", "./shaders/compVert.txt", "./shaders/compFrag.txt");
+	a.loadShader("ShadowPassPre", "./shaders/shadowPrepVert.txt", "./shaders/shadowPrepFrag.txt");
+	a.loadShader("ShadowPassPost", "./shaders/shadowRendVert.txt", "./shaders/shadowRendFrag.txt");
 
 	// Load any other textures and geometry we want to use
 	a.loadFBX("Soulspear", "./resources/models/soulspear/soulspear.fbx");
@@ -64,23 +71,27 @@ void DeferredApplication::onPlay()
 	m_light     = new LightD;
 	m_soulspear = new Geometry;
 
-	m_light->color      = glm::vec3(1, 1, 1);
-	m_light->direction = glm::normalize(glm::vec3(0, 1, 0));
+	m_light->color			 = glm::vec3(1, 1, 1);
+	m_light->direction		 = glm::vec3(1, 2.5f, 1);
+	m_light->lightProjection = glm::ortho<float>(-10, 10, -10, 10, -10, 10);
+	m_light->m_lightMatrix   = glm::lookAt(m_light->direction, glm::vec3(0), glm::vec3(0, 1, 0));
 
-	m_soulspear->mesh	   = "SoulSpear_Low:SoulSpear_Low1";
-	m_soulspear->tris	   = "SoulSpear_Low:SoulSpear_Low1";
-	m_soulspear->diffuse  = "soulspear_diffuse.tga";	// loadFBX will need to name every handle it creates,
-	m_soulspear->normal   = "soulspear_normal.tga";		// These handle names may not be what your loadFBX sets 
-	m_soulspear->specular = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)
-	m_soulspear->specPower = 40.0f;
-	m_soulspear->transform = mat4(1);
+	m_soulspear->mesh		 = "SoulSpear_Low:SoulSpear_Low1";
+	m_soulspear->tris	     = "SoulSpear_Low:SoulSpear_Low1";
+	m_soulspear->diffuse     = "soulspear_diffuse.tga";	// loadFBX will need to name every handle it creates,
+	m_soulspear->normal      = "soulspear_normal.tga";		// These handle names may not be what your loadFBX sets 
+	m_soulspear->specular    = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)
+	m_soulspear->specPower   = 40.0f;
+	m_soulspear->transform   = mat4(1);
 
 	//TODO_D("Initialize our render passes!");
 
-	m_geometryPass			= new GPass ("GeometryPassPhong", "GeometryPass");
-	m_spotLightPass			= new LPassD("", "");
-	m_directionalLightPass  = new LPassD("LightPassDirectional", "LightPass");
-	m_compositePass			= new CPass ("CompPass", "Screen"); // Screen is defined in nsfw::Assets::init()
+	m_geometryPass			 = new GPass ("GeometryPassPhong", "GeometryPass");
+	//m_spotLightPass		 = new LPassD("", "");
+	m_directionalLightPass   = new LPassD("LightPassDirectional", "LightPass");
+	m_compositePass			 = new CPass ("CompPass", "Screen"); // Screen is defined in nsfw::Assets::init()
+	m_shadowPre				 = new SPassPre("ShadowPassPre", "ShadowPass");
+	m_shadowPost			 = new SPassPost("ShadowPassPost", "ShadowPass");
 }
 
 void DeferredApplication::onStep()
@@ -94,6 +105,14 @@ void DeferredApplication::onStep()
 	m_geometryPass->prep();
 	m_geometryPass->draw(*m_camera, *m_soulspear);
 	m_geometryPass->post();
+
+	m_shadowPre->prep();
+	m_shadowPre->draw(*m_light, *m_soulspear);
+	m_shadowPre->post();
+
+	m_shadowPost->prep();
+	m_shadowPost->draw(*m_light, *m_camera);
+	m_shadowPost->post();
 
 	m_directionalLightPass->prep();
 	m_directionalLightPass->draw(*m_camera, *m_light);
@@ -113,4 +132,6 @@ void DeferredApplication::onTerm()
 	delete m_compositePass;
 	delete m_geometryPass;
 	delete m_directionalLightPass;
+	delete m_shadowPre;
+	delete m_shadowPost;
 }

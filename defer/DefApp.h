@@ -9,17 +9,21 @@ struct LightD;
 class GPass;
 class LPassD;
 class CPass;
+class SPassPre;
+class SPassPost;
 
 class DeferredApplication : public nsfw::Application
 {
-	Camera   *m_camera;
-	Geometry *m_soulspear;
-	LightD	 *m_light;
+	Camera    *m_camera;
+	Geometry  *m_soulspear;
+	LightD	  *m_light;
 
-	CPass   *m_compositePass;
-	GPass   *m_geometryPass;
-	LPassD  *m_directionalLightPass;
-	LPassD  *m_spotLightPass;
+	CPass     *m_compositePass;
+	GPass     *m_geometryPass;
+	LPassD    *m_directionalLightPass;
+	LPassD    *m_spotLightPass;
+	SPassPre  *m_shadowPre;
+	SPassPost *m_shadowPost;
 
 public:
 	void onInit();

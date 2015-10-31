@@ -56,7 +56,10 @@
     <ClInclude Include="..\dep\STB\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SPass.h">
+    <ClInclude Include="SPassPre.h">
+      <Filter>Header Files\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="SPassPost.h">
       <Filter>Header Files\Passes</Filter>
     </ClInclude>
   </ItemGroup>
