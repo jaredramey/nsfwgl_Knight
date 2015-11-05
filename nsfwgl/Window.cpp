@@ -99,7 +99,8 @@ float nsfw::Window::getTime() const
 	float nT = cT;				//New Time
 	float dT = cT - nT;			//Delta Time
 
-	return dT;	//Return Delta Time
+	return glfwGetTime();
+	//return dT;	//Return Delta Time
 }
 
 bool nsfw::Window::getKey(unsigned k) const

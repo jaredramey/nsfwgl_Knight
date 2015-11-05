@@ -14,11 +14,27 @@ class SPassPost;
 
 class DeferredApplication : public nsfw::Application
 {
+	/*
+	* Cameras
+	*/
 	Camera    *m_camera;
+
+	/*
+	* Geometry
+	*/
 	Geometry  *m_soulspear;
 	Geometry  *m_soulspear2;
+	Geometry  *m_bunny;
+	Geometry  *m_floor;
+
+	/*
+	* Lights
+	*/
 	LightD	  *m_light;
 
+	/*
+	* Passes
+	*/
 	CPass     *m_compositePass;
 	GPass     *m_geometryPass;
 	LPassD    *m_directionalLightPass;

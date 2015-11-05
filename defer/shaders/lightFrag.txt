@@ -5,15 +5,59 @@ in vec2 vTexCoord;
 out vec3 LightOut;
 
 uniform vec3 CameraPos;
+uniform mat4 View;
 
 uniform vec3 LightDirection;
 uniform vec3 LightColor;
 
 uniform sampler2D PositionMap;
 uniform sampler2D NormalMap;
+uniform sampler2D ShadowMap;
+
+uniform mat4 LightView;
+uniform mat4 LightProjection;
+
+uniform mat4 ClipToUV;
+
+float bias = 0.1f;
 
 void main()
 {
+	vec3 normal = normalize(texture(NormalMap, vTexCoord).xyz);
+	vec3 position = texture(PositionMap, vTexCoord).xyz;
+
+	
+	float d = max(0, dot( normal, LightDirection)); 
+	
+	// Shadow Stuff!
+	vec4 worldPosition = inverse(View) * vec4(position,1.f);	
+	vec4 shadowPosition = ClipToUV * LightProjection * LightView * worldPosition;	
+	if(shadowPosition.z - 0.1f  > texture(ShadowMap, shadowPosition.xy).z)
+		d = 0;
+
+	LightOut = vec3(d,d,d);
+	//LightOut = vec3(1,1,1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	//vec3 normal = normalize(texture(NormalMap, vTexCoord)).xyz;
 	//float specularPow = length(texture(NormalMap, vTexCoord));
 	//vec3 position = texture(PositionMap, vTexCoord).xyz;
@@ -25,11 +69,3 @@ void main()
 	//vec3 specular = LightColor * specTerm;
 	//specular = clamp(specular, 0.0f, 1.0f);
 	//LightOut = (specular + diffuse);
-	
-	vec3 normal = normalize(texture(NormalMap, vTexCoord).xyz);
-	vec3 position = texture(PositionMap, vTexCoord).xyz;
-
-	float d = max(0, dot( normal, LightDirection)); 
-
-	LightOut = vec3(LightColor * d);
-}

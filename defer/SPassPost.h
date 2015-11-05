@@ -38,7 +38,7 @@ public:
 		glm::mat4 lightMatrix = textureSpaceOffset * l.m_lightMatrix;
 
 		setUniform("LightMatrix", nsfw::UNIFORM::TYPE::MAT4, &lightMatrix[0][0]);
-		setUniform("LightDir", nsfw::UNIFORM::TYPE::FLO3, glm::value_ptr(l.m_lightMatrix));
+		setUniform("lightDir", nsfw::UNIFORM::TYPE::FLO3, glm::value_ptr(l.m_lightMatrix));
 		setUniform("shadowMap", nsfw::UNIFORM::TYPE::TEX2, shadow, 0);
 
 		unsigned quadVAOHandle = nsfw::Assets::instance().get<nsfw::ASSET::VAO>("Quad");

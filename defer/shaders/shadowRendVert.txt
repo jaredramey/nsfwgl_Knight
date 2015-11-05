@@ -15,7 +15,7 @@ uniform mat4 LightMatrix;
 void main()
 {
 	vNormal = Normal;
-	gl_Position = Projection * View * Position;
+	gl_Position = (Projection * View) * Position;
 	
 	vShadowCoord = LightMatrix * Position;
 }

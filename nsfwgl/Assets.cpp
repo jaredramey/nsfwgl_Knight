@@ -452,7 +452,7 @@ bool nsfw::Assets::loadOBJ(const char * name, const char * path)
 			verts.push_back(vertex);
 		}
 		indicies = mesh.indices;
-		makeVAO(shape.name.c_str(), verts.data(), verts.size(), indicies.data(), indicies.size());
+		makeVAO((shape.name.length() == 0) ? name : shape.name.c_str(), verts.data(), verts.size(), indicies.data(), indicies.size());
 	}
 
 	return true;
@@ -466,11 +466,12 @@ void nsfw::Assets::init()
 	
 	makeVAO("Cube",CubeVerts,24,CubeTris,36);
 	makeVAO("Quad",QuadVerts, 4, QuadTris,6);
-	/*
+	
 	char w[] = { 255,255,255,255 };
-	makeTexture("White", 1, 1, GL_RGB8, w);
-	*/
-
+	makeTexture("White", 1, 1, GL_RGBA, w);
+	
+	char b[] = { 0,0,255,255 };
+	makeTexture("Blue", 1, 1, GL_RGBA, b);
 }
 
 void nsfw::Assets::term()

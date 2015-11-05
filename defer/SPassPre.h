@@ -12,6 +12,7 @@ public:
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, *fbo);
 		glViewport(0, 0, 1024, 1024);
+		glEnable(GL_DEPTH_TEST);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(*shader);
@@ -19,6 +20,8 @@ public:
 
 	void post()
 	{
+		glViewport(0, 0, nsfw::Window::instance().getWidth(), nsfw::Window::instance().getHeight());
+		glDisable(GL_DEPTH_TEST);
 		glUseProgram(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
@@ -26,8 +29,11 @@ public:
 	void draw(const LightD &l, const Geometry &g)
 	{
 
-		setUniform("LightMatrix", nsfw::UNIFORM::TYPE::MAT4, &(l.m_lightMatrix[0][0]));
+		
+		setUniform("LightView", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(l.getView()));
+		setUniform("LightProjection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(l.getProjection()));
 
+		setUniform("Model", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(g.transform));
 		/*unsigned quadVAOHandle = nsfw::Assets::instance().get<nsfw::ASSET::VAO>("Quad");
 		unsigned quadNumtris = nsfw::Assets::instance().get<nsfw::ASSET::SIZE>("Quad");*/
 

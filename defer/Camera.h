@@ -20,10 +20,10 @@ public:
 	bool SetView(const glm::vec3 position, const glm::vec3 target, const glm::vec3 up);
 
 
-	const glm::mat4 GetWorldTransform();
+	const glm::mat4 GetWorldTransform() const;
 
-	glm::mat4 GetView();
-	glm::mat4 GetProjection();
+	glm::mat4 GetView() const;
+	glm::mat4 GetProjection() const;
 	glm::mat4 GetViewProjection();
 
 	const glm::vec3 GetPosition() { return mPosition; }
