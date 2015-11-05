@@ -145,14 +145,6 @@
     <ClInclude Include="SPassPost.h" />
     <ClInclude Include="SPassPre.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="shaders\compFrag.txt" />
-    <Text Include="shaders\compVert.txt" />
-    <Text Include="shaders\geoFrag.txt" />
-    <Text Include="shaders\geoVert.txt" />
-    <Text Include="shaders\lightFrag.txt" />
-    <Text Include="shaders\lightVert.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

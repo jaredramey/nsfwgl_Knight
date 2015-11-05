@@ -163,6 +163,14 @@
     <ClInclude Include="render.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\defer\shaders\compFrag.txt" />
+    <Text Include="..\defer\shaders\compVert.txt" />
+    <Text Include="..\defer\shaders\geoFrag.txt" />
+    <Text Include="..\defer\shaders\geoVert.txt" />
+    <Text Include="..\defer\shaders\lightFrag.txt" />
+    <Text Include="..\defer\shaders\lightVert.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

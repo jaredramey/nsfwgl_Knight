@@ -16,6 +16,7 @@ class DeferredApplication : public nsfw::Application
 {
 	Camera    *m_camera;
 	Geometry  *m_soulspear;
+	Geometry  *m_soulspear2;
 	LightD	  *m_light;
 
 	CPass     *m_compositePass;

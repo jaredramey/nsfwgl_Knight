@@ -70,19 +70,29 @@ void DeferredApplication::onPlay()
 	//TODO_D("Initialize our scene objects!");
 	m_light     = new LightD;
 	m_soulspear = new Geometry;
+	m_soulspear2 = new Geometry;
 
 	m_light->color			 = glm::vec3(1, 1, 1);
 	m_light->direction		 = glm::vec3(1, 2.5f, 1);
 	m_light->lightProjection = glm::ortho<float>(-10, 10, -10, 10, -10, 10);
 	m_light->m_lightMatrix   = glm::lookAt(m_light->direction, glm::vec3(0), glm::vec3(0, 1, 0));
 
-	m_soulspear->mesh		 = "SoulSpear_Low:SoulSpear_Low1";
-	m_soulspear->tris	     = "SoulSpear_Low:SoulSpear_Low1";
-	m_soulspear->diffuse     = "soulspear_diffuse.tga";	// loadFBX will need to name every handle it creates,
-	m_soulspear->normal      = "soulspear_normal.tga";		// These handle names may not be what your loadFBX sets 
-	m_soulspear->specular    = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)
-	m_soulspear->specPower   = 40.0f;
-	m_soulspear->transform   = mat4(1);
+	//m_soulspear->mesh		 = "SoulSpear_Low:SoulSpear_Low1";
+	//m_soulspear->tris	     = "SoulSpear_Low:SoulSpear_Low1";
+	//m_soulspear->diffuse     = "soulspear_diffuse.tga";	// loadFBX will need to name every handle it creates,
+	//m_soulspear->normal      = "soulspear_normal.tga";		// These handle names may not be what your loadFBX sets 
+	//m_soulspear->specular    = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)
+	//m_soulspear->specPower   = 40.0f;
+	//m_soulspear->transform = mat4(1);
+
+	m_soulspear2->mesh		 = "SoulSpear_Low:SoulSpear_Low1";
+	m_soulspear2->tris		 = "SoulSpear_Low:SoulSpear_Low1";
+	m_soulspear2->diffuse	 = "soulspear_diffuse.tga";	// loadFBX will need to name every handle it creates,
+	m_soulspear2->normal	 = "soulspear_normal.tga";		// These handle names may not be what your loadFBX sets 
+	m_soulspear2->specular   = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)
+	m_soulspear2->specPower  = 40.0f;
+	m_soulspear2->transform = glm::mat4(1); // <-- Use trnaslate to move over 
+	//transform = glm::mat4(glm::vec4(2), glm::vec4(1), glm::vec4(1), glm::vec4(1));
 
 	//TODO_D("Initialize our render passes!");
 
@@ -100,14 +110,17 @@ void DeferredApplication::onStep()
 	m_light->update();
 	m_camera->Update(0);
 	m_soulspear->update();
+	m_soulspear2->update();
 	
 	//TODO_D("Draw all of our renderpasses!");
 	m_geometryPass->prep();
 	m_geometryPass->draw(*m_camera, *m_soulspear);
+	m_geometryPass->draw(*m_camera, *m_soulspear2);
 	m_geometryPass->post();
 
 	m_shadowPre->prep();
 	m_shadowPre->draw(*m_light, *m_soulspear);
+	m_shadowPre->draw(*m_light, *m_soulspear2);
 	m_shadowPre->post();
 
 	m_shadowPost->prep();
@@ -128,6 +141,7 @@ void DeferredApplication::onTerm()
 	delete m_camera;
 	delete m_light;
 	delete m_soulspear;
+	delete m_soulspear2;
 
 	delete m_compositePass;
 	delete m_geometryPass;
