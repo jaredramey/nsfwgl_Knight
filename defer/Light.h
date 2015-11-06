@@ -29,5 +29,34 @@ struct LightP
 {
 	glm::vec3 color;
 	glm::vec3 position;
-	float attenuation;
+
+	struct Attenuation
+	{
+		float kC = 1;
+		float kL = 1;
+		float kQ = 1;
+	};
+	Attenuation attenuation;
+
+	void update(float deltaTime)
+	{
+		if(position.x > maxPosition)
+		{
+			position.x = maxPosition;
+			direction *= -1;
+		}
+		else if (position.x < minPosition)
+		{
+			position.x = minPosition;
+			direction *= -1;
+		}
+
+		position.x += moveSpeed * direction * deltaTime;
+	}
+
+private:
+	float maxPosition = 5;
+	float minPosition = -5;
+	float moveSpeed = 1;
+	int direction = 1;
 };

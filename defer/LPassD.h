@@ -39,10 +39,6 @@ public:
 		setUniform("LightProjection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(l.getProjection()));
 		setUniform("LightView", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(l.getView()));
 
-		
-		//unsigned quadVAOHandle = nsfw::Assets::instance().get<nsfw::ASSET::VAO>("Quad");
-		//unsigned quadNumtris = nsfw::Assets::instance().get<nsfw::ASSET::SIZE>("Quad");
-
 		glm::mat4 ClipToUV(
 			0.5f, 0.0f, 0.0f, 0.0f,
 			0.0f, 0.5f, 0.0f, 0.0f,
@@ -59,17 +55,6 @@ public:
 		setUniform("PositionMap", nsfw::UNIFORM::TYPE::TEX2, position, 0);
 		setUniform("NormalMap", nsfw::UNIFORM::TYPE::TEX2, normal, 1);
 		setUniform("ShadowMap", nsfw::UNIFORM::TYPE::TEX2, shadow, 2);
-
-		//setUniform("TexelScalar",    nsfw::UNIFORM::MAT4, glm::value_ptr(nsfw::Window::instance().getTexelAdjustmentMatrix()));
-
-		/*
-		* Uniforms to be set:
-		* CameraPos      == DONE
-		* LightDirection == DONE
-		* LightColor	 == DONE
-		* PositionMap    == DONE
-		* NormalMap      == DONE
-		*/
 
 		unsigned quadVAOHandle  = nsfw::Assets::instance().get<nsfw::ASSET::VAO>("Quad");
 		unsigned quadNumtris    = nsfw::Assets::instance().get<nsfw::ASSET::SIZE>("Quad");

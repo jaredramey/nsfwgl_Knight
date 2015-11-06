@@ -77,7 +77,7 @@ void DeferredApplication::onPlay()
 	/*
 	* Filling out Light data
 	*/
-	m_light->color			 = glm::vec3(1, 1, 1);
+	m_light->color			 = glm::vec3(0.0f, 1.f, 1.f);
 	m_light->direction		 = glm::normalize(glm::vec3(1, 1, 1));
 	m_light->lightProjection = glm::ortho<float>(-10, 10, -10, 10, -10, 10);
 	m_light->m_lightMatrix   = glm::lookAt(m_light->direction, glm::vec3(0), glm::vec3(0, 1, 0));
@@ -103,7 +103,6 @@ void DeferredApplication::onPlay()
 	m_soulspear2->specular   = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)
 	m_soulspear2->specPower  = 40.0f;
 	m_soulspear2->transform	 = glm::mat4(1); // <-- Use trnaslate to move over 
-	//transform = glm::mat4(glm::vec4(2), glm::vec4(1), glm::vec4(1), glm::vec4(1));
 	m_soulspear2->transform  = glm::translate(m_soulspear2->transform, glm::vec3(0.25f, -0.87f, -0.5f));
 
 	//bunny
@@ -128,7 +127,6 @@ void DeferredApplication::onPlay()
 	m_directionalLightPass   = new LPassD("LightPassDirectional", "LightPass");
 	m_compositePass			 = new CPass ("CompPass", "Screen"); // Screen is defined in nsfw::Assets::init()
 	m_shadowPre				 = new SPassPre("ShadowPassPre", "ShadowPass");
-	m_shadowPost			 = new SPassPost("ShadowPassPost", "ShadowPass");
 }
 
 void DeferredApplication::onStep()
@@ -163,10 +161,6 @@ void DeferredApplication::onStep()
 	//m_shadowPre->draw(*m_light, *m_bunny);
 	m_shadowPre->draw(*m_light, *m_floor);
 	m_shadowPre->post();
-
-	//m_shadowPost->prep();
-	//m_shadowPost->draw(*m_light, *m_camera);
-	//m_shadowPost->post();
 
 	/*
 	* LIGHT PASSES
