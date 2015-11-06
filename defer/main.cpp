@@ -10,6 +10,7 @@
 #include "GPass.h"
 #include "CPass.h"
 #include "LPassD.h"
+#include "LPassP.h"
 #include "SPassPre.h"
 #include "SPassPost.h"
 
@@ -51,7 +52,7 @@ void DeferredApplication::onInit()
 	// Load Shaders
 	a.loadShader("GeometryPassPhong", "./shaders/geoVert.txt", "./shaders/geoFrag.txt");
 	a.loadShader("LightPassDirectional", "./shaders/lightVert.txt", "./shaders/lightFrag.txt");
-	//a.loadShader("LightPassPoint", "/path/to/lpass/Point/vertex", "/path/to/lpass/Point/fragment");
+	a.loadShader("LightPointPass", "./shaders/LightPVert.txt", "./shaders/LightPFrag.txt");
 	a.loadShader("CompPass", "./shaders/compVert.txt", "./shaders/compFrag.txt");
 	a.loadShader("ShadowPassPre", "./shaders/shadowPrepVert.txt", "./shaders/shadowPrepFrag.txt");
 	a.loadShader("ShadowPassPost", "./shaders/shadowRendVert.txt", "./shaders/shadowRendFrag.txt");
@@ -69,6 +70,7 @@ void DeferredApplication::onPlay()
 {
 	//TODO_D("Initialize our scene objects!");
 	m_light      = new LightD;
+	m_lightP	 = new LightP;
 	m_soulspear  = new Geometry;
 	m_soulspear2 = new Geometry;
 	m_bunny		 = new Geometry;
@@ -81,6 +83,10 @@ void DeferredApplication::onPlay()
 	m_light->direction		 = glm::normalize(glm::vec3(1, 1, 1));
 	m_light->lightProjection = glm::ortho<float>(-10, 10, -10, 10, -10, 10);
 	m_light->m_lightMatrix   = glm::lookAt(m_light->direction, glm::vec3(0), glm::vec3(0, 1, 0));
+
+	m_lightP->color			 = glm::vec3(1.f, 1.f, 0.0f);
+	m_lightP->position		 = glm::vec4(1, 2, 2, 1);
+	m_lightP->attenuation.kC = 0;
 
 	/*
 	* Filling out Geometry Data 
@@ -108,22 +114,22 @@ void DeferredApplication::onPlay()
 	//bunny
 	m_bunny->mesh	   = "Bunny";
 	m_bunny->tris	   = "Bunny";
-	m_bunny->diffuse	= "White";
+	m_bunny->diffuse   = "White";
 	m_bunny->specPower = 128.f;
 
 	//floor
-	m_floor->mesh = "Quad";
-	m_floor->tris = "Quad";
-	m_floor->diffuse = "White";
-	m_floor->normal = "Blue";
-	m_floor->specular = "White";
+	m_floor->mesh	   = "Quad";
+	m_floor->tris	   = "Quad";
+	m_floor->diffuse   = "White";
+	m_floor->normal	   = "Blue";
+	m_floor->specular  = "White";
 	m_floor->specPower = 40.0f;
 	m_floor->transform = glm::rotate(90.0f, glm::vec3(-1, 0, 0)) * glm::scale(glm::vec3(10, 10, 1));
 
 	//TODO_D("Initialize our render passes!");
 
 	m_geometryPass			 = new GPass ("GeometryPassPhong", "GeometryPass");
-	//m_spotLightPass		 = new LPassD("", "");
+	m_spotLightPass			 = new LPassP("LightPointPass", "LightPass");
 	m_directionalLightPass   = new LPassD("LightPassDirectional", "LightPass");
 	m_compositePass			 = new CPass ("CompPass", "Screen"); // Screen is defined in nsfw::Assets::init()
 	m_shadowPre				 = new SPassPre("ShadowPassPre", "ShadowPass");
@@ -137,6 +143,7 @@ void DeferredApplication::onStep()
 
 	//TODO_D("Update our game objects-- IF THEY EVEN DO ANYTHING");
 	m_light->update();
+	m_lightP->update(nsfw::Window::instance().getTime());
 	m_camera->Update(0);
 	m_soulspear->update();
 	m_soulspear2->update();
@@ -169,6 +176,10 @@ void DeferredApplication::onStep()
 	m_directionalLightPass->draw(*m_camera, *m_light);
 	m_directionalLightPass->post();
 
+	m_spotLightPass->prep();
+	m_spotLightPass->draw(*m_camera, *m_lightP);
+	m_spotLightPass->post();
+
 	/*
 	* COMPOSITE PASSES
 	*/
@@ -181,6 +192,7 @@ void DeferredApplication::onTerm()
 {
 	delete m_camera;
 	delete m_light;
+	delete m_lightP;
 	delete m_soulspear;
 	delete m_soulspear2;
 	delete m_bunny;
@@ -189,6 +201,7 @@ void DeferredApplication::onTerm()
 	delete m_compositePass;
 	delete m_geometryPass;
 	delete m_directionalLightPass;
+	delete m_spotLightPass;
 	delete m_shadowPre;
 	delete m_shadowPost;
 }

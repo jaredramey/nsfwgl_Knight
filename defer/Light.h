@@ -27,8 +27,8 @@ struct LightD
 
 struct LightP
 {
-	glm::vec3 color;
-	glm::vec3 position;
+	glm::vec3 color = glm::vec3(1);
+	glm::vec4 position = glm::vec4(0.0f, 0.0f, 0.0f, 1.f);
 
 	struct Attenuation
 	{

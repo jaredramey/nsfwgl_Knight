@@ -59,5 +59,8 @@
     <ClInclude Include="SPassPost.h">
       <Filter>Header Files\Passes</Filter>
     </ClInclude>
+    <ClInclude Include="LPassP.h">
+      <Filter>Header Files\Passes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

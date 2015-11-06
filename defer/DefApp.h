@@ -5,9 +5,11 @@
 struct Camera;
 struct Geometry;
 struct LightD;
+struct LightP;
 
 class GPass;
 class LPassD;
+class LPassP;
 class CPass;
 class SPassPre;
 class SPassPost;
@@ -31,6 +33,7 @@ class DeferredApplication : public nsfw::Application
 	* Lights
 	*/
 	LightD	  *m_light;
+	LightP    *m_lightP;
 
 	/*
 	* Passes
@@ -38,7 +41,7 @@ class DeferredApplication : public nsfw::Application
 	CPass     *m_compositePass;
 	GPass     *m_geometryPass;
 	LPassD    *m_directionalLightPass;
-	LPassD    *m_spotLightPass;
+	LPassP    *m_spotLightPass;
 	SPassPre  *m_shadowPre;
 	SPassPost *m_shadowPost;
 

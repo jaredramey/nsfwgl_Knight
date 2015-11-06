@@ -16,7 +16,6 @@ public:
 	void prep()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, *fbo);
-		glClear(GL_COLOR_BUFFER_BIT);
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);
