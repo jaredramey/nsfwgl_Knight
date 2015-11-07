@@ -6,6 +6,7 @@
 #include "Geometry.h"
 #include "Light.h"
 #include "Camera.h"
+#include "Keyboard.h"
 
 #include "GPass.h"
 #include "CPass.h"
@@ -59,11 +60,13 @@ void DeferredApplication::onInit()
 
 	// Load any other textures and geometry we want to use
 	a.loadFBX("Soulspear", "./resources/models/soulspear/soulspear.fbx");
-	//a.loadOBJ("Bunny", "./resources/stanford_objs/bunny.obj");
+	a.loadOBJ("Bunny", "./resources/stanford_objs/bunny.obj");
 
 	m_camera = new Camera;
 	m_camera->StartupPerspective(45, (float)w.getWidth() / w.getHeight(), .1f, 100.0f);
 	m_camera->SetView(glm::vec3(10, 10, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+
+	Keyboard::Init();
 }
 
 void DeferredApplication::onPlay()
@@ -99,7 +102,7 @@ void DeferredApplication::onPlay()
 	m_soulspear->specular    = "soulspear_specular.tga";	// them as! (Assets will report what the key names are though)
 	m_soulspear->specPower   = 40.0f;
 	m_soulspear->transform	 = mat4(1);
-	m_soulspear->transform   = glm::translate(m_soulspear->transform, glm::vec3(0.0f, -0.87f, 0.0f));
+	m_soulspear->transform   = glm::translate(m_soulspear->transform, glm::vec3(3.0f, -0.87f, -2.0f));
 
 	//SoulSpear 2
 	m_soulspear2->mesh		 = "SoulSpear_Low:SoulSpear_Low1";
@@ -115,7 +118,10 @@ void DeferredApplication::onPlay()
 	m_bunny->mesh	   = "Bunny";
 	m_bunny->tris	   = "Bunny";
 	m_bunny->diffuse   = "White";
+	m_bunny->normal    = "Blue";
+	m_bunny->specular  = "White";
 	m_bunny->specPower = 128.f;
+	m_bunny->transform = glm::translate(glm::mat4(1), glm::vec3(-10, 0, 2));
 
 	//floor
 	m_floor->mesh	   = "Quad";
@@ -144,6 +150,7 @@ void DeferredApplication::onStep()
 	//TODO_D("Update our game objects-- IF THEY EVEN DO ANYTHING");
 	m_light->update();
 	m_lightP->update(nsfw::Window::instance().getTime());
+	UpdateFlyCamControls(nsfw::Window::instance().getTime(), 10);
 	m_camera->Update(0);
 	m_soulspear->update();
 	m_soulspear2->update();
@@ -155,7 +162,7 @@ void DeferredApplication::onStep()
 	m_geometryPass->prep();
 	m_geometryPass->draw(*m_camera, *m_soulspear);
 	m_geometryPass->draw(*m_camera, *m_soulspear2);
-	//m_geometryPass->draw(*m_camera, *m_bunny);
+	m_geometryPass->draw(*m_camera, *m_bunny);
 	m_geometryPass->draw(*m_camera, *m_floor);
 	m_geometryPass->post();
 
@@ -165,7 +172,7 @@ void DeferredApplication::onStep()
 	m_shadowPre->prep();
 	m_shadowPre->draw(*m_light, *m_soulspear);
 	m_shadowPre->draw(*m_light, *m_soulspear2);
-	//m_shadowPre->draw(*m_light, *m_bunny);
+	m_shadowPre->draw(*m_light, *m_bunny);
 	m_shadowPre->draw(*m_light, *m_floor);
 	m_shadowPre->post();
 
@@ -204,4 +211,32 @@ void DeferredApplication::onTerm()
 	delete m_spotLightPass;
 	delete m_shadowPre;
 	delete m_shadowPost;
+}
+
+void DeferredApplication::UpdateFlyCamControls(float deltaTime, float moveSpeed)
+{
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_W) || Keyboard::IsKeyRepeat(Keyboard::KEY_W))
+	{
+		m_camera->Move(moveSpeed * deltaTime);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_X) || Keyboard::IsKeyRepeat(Keyboard::KEY_X))
+	{
+		m_camera->Move(-moveSpeed * deltaTime);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_A) || Keyboard::IsKeyRepeat(Keyboard::KEY_A))
+	{
+		m_camera->Slide(-moveSpeed * deltaTime, 0);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_D) || Keyboard::IsKeyRepeat(Keyboard::KEY_D))
+	{
+		m_camera->Slide(-moveSpeed * deltaTime, 0);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_E) || Keyboard::IsKeyRepeat(Keyboard::KEY_E))
+	{
+		m_camera->Slide(0, moveSpeed * deltaTime);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_C) || Keyboard::IsKeyRepeat(Keyboard::KEY_C))
+	{
+		m_camera->Slide(0, -moveSpeed * deltaTime);
+	}
 }

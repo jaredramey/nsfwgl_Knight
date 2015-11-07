@@ -50,4 +50,5 @@ public:
 	void onStep();
 	void onTerm();
 	void onPlay();
+	void UpdateFlyCamControls(float deltaTime, float moveSpeed);
 };
