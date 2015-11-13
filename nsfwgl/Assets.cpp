@@ -1,14 +1,3 @@
-//preventing the error of an unsafe call
-//#pragma warning(disable : 4996)
-//#include "ogl\gl_core_4_4.h"
-//#include "glm\glm.hpp"
-//#include "glm\ext.hpp"
-//#include "glfw\glfw3.h"
-//#include "STB\stb_image.h"
-//#include "FBX\FBXFile.h"
-//#include "TOL\tiny_obj_loader.h"
-
-
 #include "nsfw.h"
 #include <fstream>
 
@@ -96,8 +85,6 @@ bool nsfw::Assets::makeFBO(char * name, unsigned w, unsigned h, unsigned nTextur
 {
 	ASSET_LOG(GL_HANDLE_TYPE::FBO);
 	//TODO_D("Create an FBO! Array parameters are for the render targets, which this function should also generate!\n
-	//use makeTexture.\n
-	//NOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.");
 
 	// setup framebuffer
 	GLuint fbo;
@@ -232,17 +219,6 @@ bool nsfw::Assets::loadTexture(const char * name, const char * path)
 	}
 	makeTexture(name, imageWidth, imageHeight, imageFormat, (char*)data);
 
-	//BREADCRUMB
-	/*DUPLICATE CODE WITH MakeTexture FUNCTION, CALL MakeTexture when you get your parameter data.
-	NEVER DUPLICATE CODE!*/
-	/*
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	*/
 	stbi_image_free(data);
 
 	return true;
