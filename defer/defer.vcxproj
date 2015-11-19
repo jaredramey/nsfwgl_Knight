@@ -145,6 +145,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="LPassD.h" />
     <ClInclude Include="LPassP.h" />
+    <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="SPassPost.h" />
     <ClInclude Include="SPassPre.h" />
   </ItemGroup>
