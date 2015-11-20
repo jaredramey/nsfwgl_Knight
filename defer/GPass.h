@@ -4,6 +4,7 @@
 
 #include "Camera.h"
 #include "Geometry.h"
+#include "ParticleEmitter.h"
 
 class GPass : public nsfw::RenderPass
 {
@@ -32,7 +33,7 @@ public:
 
 	GPass(const char *shaderName, const char *fboName) : RenderPass(shaderName, fboName) {}
 
-	void draw(Camera &c, const Geometry &g)	
+	void draw(Camera &c, const Geometry &g, ParticleEmitter &p)	
 	{
 		setUniform("Projection",	nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.GetProjection()));
 		setUniform("View",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.GetView()));
