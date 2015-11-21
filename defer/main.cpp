@@ -7,6 +7,7 @@
 #include "Light.h"
 #include "Camera.h"
 #include "Keyboard.h"
+#include "ParticleEmitter.h"
 
 #include "GPass.h"
 #include "CPass.h"
@@ -78,6 +79,7 @@ void DeferredApplication::onPlay()
 	m_soulspear2 = new Geometry;
 	m_bunny		 = new Geometry;
 	m_floor		 = new Geometry;
+	m_testParticle = new ParticleEmitter(100, 12, 2.0f);
 
 	/*
 	* Filling out Light data
@@ -90,6 +92,17 @@ void DeferredApplication::onPlay()
 	m_lightP->color			 = glm::vec3(1.f, 1.f, 0.0f);
 	m_lightP->position		 = glm::vec4(1, 2, 2, 1);
 	m_lightP->attenuation.kC = 0;
+
+	/*
+	* Filling out Particle Data
+	*/
+
+	//CPU Test Particle
+	m_testParticle->mesh = "Quad";
+	m_testParticle->tris = "Quad";
+	m_testParticle->color = "White";
+	m_testParticle->transform = glm::mat4(1);
+	m_testParticle->velocity = glm::vec3(0, 2, 0);
 
 	/*
 	* Filling out Geometry Data 
@@ -154,6 +167,7 @@ void DeferredApplication::onStep()
 	m_camera->Update(0);
 	m_soulspear->update();
 	m_soulspear2->update();
+	m_testParticle->update();
 	
 	//TODO_D("Draw all of our renderpasses!");
 	/*
@@ -164,6 +178,7 @@ void DeferredApplication::onStep()
 	m_geometryPass->draw(*m_camera, *m_soulspear2);
 	m_geometryPass->draw(*m_camera, *m_bunny);
 	m_geometryPass->draw(*m_camera, *m_floor);
+	m_geometryPass->draw(*m_camera, *m_testParticle);
 	m_geometryPass->post();
 
 	/*

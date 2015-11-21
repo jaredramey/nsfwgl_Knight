@@ -81,6 +81,31 @@ bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigne
 	return true;
 }
 
+bool nsfw::Assets::makeVAO(const char *name, const struct ParticleVertex *particalVertex, unsigned vsize, unsigned vbo)
+{
+	unsigned vao;
+
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleVertex) * vsize, particalVertex, GL_STREAM_DRAW);
+
+	//set up attribs
+	glEnableVertexAttribArray(0);//position
+	glEnableVertexAttribArray(1);//velocity
+	glEnableVertexAttribArray(2);//lifeTime
+	glEnableVertexAttribArray(3);//lifeSpan
+
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex), (void*)ParticleVertex::POSITION_OFFSET);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex), (void*)ParticleVertex::VELOCITY_OFFSET);
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex), (void*)ParticleVertex::LIFETIME_OFFSET);
+	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex), (void*)ParticleVertex::LIFESPAN_OFFSET);
+
+}
+
 bool nsfw::Assets::makeFBO(char * name, unsigned w, unsigned h, unsigned nTextures, const char * names[], const unsigned depths[])
 {
 	ASSET_LOG(GL_HANDLE_TYPE::FBO);

@@ -33,7 +33,30 @@ public:
 
 	GPass(const char *shaderName, const char *fboName) : RenderPass(shaderName, fboName) {}
 
-	void draw(Camera &c, const Geometry &g, ParticleEmitter &p)	
+	/*
+	 * draw call for particles
+	*/
+	void draw(Camera &c, const ParticleEmitter &e)
+	{
+		setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.GetProjection()));
+		setUniform("View", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.GetView()));
+
+		// draw all of the live particles
+		for (int i = 0; i < e.firstInactiveParticle; ++i)
+		{
+			auto& curParticle = e.particles[i];
+			setUniform("Model", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(curParticle.transform));
+			setUniform("Diffuse", nsfw::UNIFORM::TEX2, e.color, 0);
+
+			glBindVertexArray(*e.mesh);
+			glDrawElements(GL_TRIANGLES, *e.tris, GL_UNSIGNED_INT, 0);
+		}
+	}
+
+	/*
+	 * draw call for geometry
+	*/
+	void draw(Camera &c, const Geometry &g)	
 	{
 		setUniform("Projection",	nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.GetProjection()));
 		setUniform("View",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.GetView()));

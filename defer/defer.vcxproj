@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GPUParticleEmitter.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -141,6 +142,7 @@
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="GPass.h" />
     <ClInclude Include="CPass.h" />
+    <ClInclude Include="GPUParticleEmitter.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LPassD.h" />

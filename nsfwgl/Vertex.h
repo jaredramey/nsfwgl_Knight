@@ -13,6 +13,26 @@ namespace nsfw
 		glm::vec2 texCoord;
 	};
 
+	struct ParticleVertex
+	{
+		ParticleVertex() : lifeTime(1), lifeSpan(0) {}
+
+		glm::vec3 position;
+		glm::vec3 velocity;
+
+		float lifeTime;
+		float lifeSpan;
+
+		enum Offsets
+		{
+			POSITION_OFFSET = 0,
+			VELOCITY_OFFSET = POSITION_OFFSET + sizeof(position),
+			LIFETIME_OFFSET = VELOCITY_OFFSET + sizeof(velocity),
+			LIFESPAN_OFFSET = LIFETIME_OFFSET + sizeof(lifeTime),
+		};
+
+	};
+
 	const vec4 up(0, 1, 0, 0);
 	const vec4 down = -up;
 	const vec4 right(1, 0, 0, 0);

@@ -13,6 +13,7 @@ class LPassP;
 class CPass;
 class SPassPre;
 class SPassPost;
+class ParticleEmitter;
 
 class DeferredApplication : public nsfw::Application
 {
@@ -28,6 +29,11 @@ class DeferredApplication : public nsfw::Application
 	Geometry  *m_soulspear2;
 	Geometry  *m_bunny;
 	Geometry  *m_floor;
+
+	/*
+	* Particles
+	*/
+	ParticleEmitter *m_testParticle;
 
 	/*
 	* Lights

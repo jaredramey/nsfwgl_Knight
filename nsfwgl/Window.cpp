@@ -7,6 +7,8 @@
 
 #include "nsfw.h"
 
+float dT = 0, cT = 0, nT = 0;
+
 //this is for glfw debug 
 void APIENTRY oglErrorDefaultCallback(GLenum source,
 	GLenum type,
@@ -95,11 +97,11 @@ void nsfw::Window::term()
 float nsfw::Window::getTime() const
 {
 	//TODO();
-	float cT = glfwGetTime();	//Current Time
-	float nT = cT;				//New Time
-	float dT = cT - nT;			//Delta Time
+	cT = glfwGetTime();	//Current Time
+	dT = cT - nT;			//Delta Time
+	nT = cT;				//New Time
 
-	return glfwGetTime();
+	return dT;
 	//return dT;	//Return Delta Time
 }
 
