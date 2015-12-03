@@ -104,6 +104,15 @@ bool nsfw::Assets::makeVAO(const char *name, const struct ParticleVertex *partic
 	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex), (void*)ParticleVertex::LIFETIME_OFFSET);
 	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex), (void*)ParticleVertex::LIFESPAN_OFFSET);
 
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	setINTERNAL(nsfw::ASSET::VAO, (char*)name, vao);
+	setINTERNAL(nsfw::ASSET::VBO, (char*)name, vbo);
+	setINTERNAL(nsfw::ASSET::SIZE, (char*)name, vsize);
+
+	return true;
 }
 
 bool nsfw::Assets::makeFBO(char * name, unsigned w, unsigned h, unsigned nTextures, const char * names[], const unsigned depths[])
@@ -249,7 +258,7 @@ bool nsfw::Assets::loadTexture(const char * name, const char * path)
 	return true;
 }
 
-bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char * fpath)
+bool nsfw::Assets::loadShader(const char* name, const char* vpath, const char* fpath)
 {
 	ASSET_LOG(GL_HANDLE_TYPE::SHADER);
 	//TODO_D("Load shader from a file.");
@@ -266,8 +275,6 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 	freeSubShader(fshader);
 	glGetProgramiv(programID, GL_LINK_STATUS, &success);
 
-	
-
 	if (success == GL_FALSE)
 	{
 		int infoLogLength = 0;
@@ -281,6 +288,38 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 		instead wait until after checks clear then add it to the asset man
 		*/
 		//setINTERNAL(SHADER, (char *)name, 0);
+	}
+	setINTERNAL(SHADER, (char *)name, programID);
+	return true;
+}
+
+bool nsfw::Assets::loadShader(const char* name, const char* vpath, const char* gpath, const char* fpath)
+{
+	ASSET_LOG(GL_HANDLE_TYPE::SHADER);
+
+	unsigned programID = glCreateProgram();
+	unsigned vshader = loadSubshader(GL_VERTEX_SHADER, vpath);
+	unsigned gshader = loadSubshader(GL_GEOMETRY_SHADER, gpath);
+	unsigned fshader = loadSubshader(GL_FRAGMENT_SHADER, fpath);
+	glAttachShader(programID, vshader);
+	glAttachShader(programID, gshader);
+	glAttachShader(programID, fshader);
+	glLinkProgram(programID);
+	int success;
+
+	freeSubShader(vshader);
+	freeSubShader(gshader);
+	freeSubShader(fshader);
+	glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &success);
+
+	if (success == GL_FALSE)
+	{
+		int infoLogLength = 0;
+		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
+		char* infoLog = new char[infoLogLength];
+		glGetProgramInfoLog(programID, infoLogLength, 0, infoLog);
+		printf("ERROR: Failed to link shader program!\n%s\n", infoLog);
+		delete[] infoLog;
 	}
 	setINTERNAL(SHADER, (char *)name, programID);
 	return true;
@@ -329,6 +368,11 @@ unsigned int nsfw::Assets::loadSubshader(unsigned int type, const char* path)
 
 	delete[] src;
 	return shader;
+}
+
+bool nsfw::Assets::createUpdateShader()
+{
+
 }
 
 bool nsfw::Assets::loadFBX(const char * name, const char * path)

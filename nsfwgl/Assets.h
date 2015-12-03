@@ -131,9 +131,15 @@ namespace nsfw
 		// should load a texture from a file, use makeTexture to alloc, and then copy filedata in
 		bool loadTexture(const char *name, const char *path);
 	
-		// should load a shader from file
+		// should load a shader from file [vpath, fpath]
 		bool loadShader(const char *name, const char *vpath, const char *fpath);
-	
+
+		// overload for loading shader from file [vpath, gpath, fpath]
+		bool loadShader(const char *name, const char *vpath, const char *gpath, const char *fpath);
+
+		// should load an update shader from file with help of overloaded loadShader function
+		bool createUpdateShader();
+
 		// should load from an FBX, adding assets to the library as they are discovered
 		bool loadFBX(const char *name, const char *path);
 
