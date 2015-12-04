@@ -81,9 +81,9 @@ bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigne
 	return true;
 }
 
-bool nsfw::Assets::makeVAO(const char *name, const struct ParticleVertex *particalVertex, unsigned vsize, unsigned vbo)
+bool nsfw::Assets::makeVAO(const char *name, const struct ParticleVertex *particalVertex, unsigned vsize)
 {
-	unsigned vao;
+	GLuint vao, vbo;
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
@@ -325,6 +325,32 @@ bool nsfw::Assets::loadShader(const char* name, const char* vpath, const char* g
 	return true;
 }
 
+bool nsfw::Assets::loadShader(const char *name, const char *vpath)
+{
+	ASSET_LOG(GL_HANDLE_TYPE::SHADER);
+
+	unsigned programID = glCreateProgram();
+	unsigned vshader = loadSubshader(GL_VERTEX_SHADER, vpath);
+	glAttachShader(programID, vshader);
+	glLinkProgram(programID);
+	int success;
+
+	freeSubShader(vshader);
+	glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &success);
+
+	if (success == GL_FALSE)
+	{
+		int infoLogLength = 0;
+		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
+		char* infoLog = new char[infoLogLength];
+		glGetProgramInfoLog(programID, infoLogLength, 0, infoLog);
+		printf("ERROR: Failed to link shader program!\n%s\n", infoLog);
+		delete[] infoLog;
+	}
+	setINTERNAL(SHADER, (char *)name, programID);
+	return true;
+}
+
 void nsfw::Assets::freeSubShader(unsigned int s) { glDeleteShader(s); }
 
 unsigned int nsfw::Assets::loadSubshader(unsigned int type, const char* path)
@@ -370,9 +396,19 @@ unsigned int nsfw::Assets::loadSubshader(unsigned int type, const char* path)
 	return shader;
 }
 
-bool nsfw::Assets::createUpdateShader()
+bool nsfw::Assets::createUpdateShader(const char *name, const char *vpath, float lifeMin, float lifeMax)
 {
+	loadShader(name, vpath);
 
+	//specify the data that we will stream back
+	const char* varyings[] = {"position", "velocity", "lifetime", "lifespan"};
+
+	glTransformFeedbackVaryings(nsfw::Assets::instance().get<nsfw::ASSET::SHADER>(name), 4, varyings, GL_INTERLEAVED_ATTRIBS);
+
+	glUseProgram(nsfw::Assets::instance().get<nsfw::ASSET::SHADER>(name));
+
+	//bind lifetime min and max in particleemitter class
+	return true;
 }
 
 bool nsfw::Assets::loadFBX(const char * name, const char * path)

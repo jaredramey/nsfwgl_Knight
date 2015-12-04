@@ -120,7 +120,7 @@ namespace nsfw
 		//VAO for regular geometry
 		bool makeVAO(const char *name, const struct Vertex *verts, unsigned vsize, const unsigned *tris, unsigned tsize);
 		//VAO for particles
-		bool makeVAO(const char *name, const struct ParticleVertex *particalVertex, unsigned vsize, unsigned vbo);
+		bool makeVAO(const char *name, const struct ParticleVertex *particalVertex, unsigned vsize);
 
 		// should call makeTexture nTextures number of times
 		bool makeFBO(char *name, unsigned w, unsigned h, unsigned nTextures, const char *names[], const unsigned depths[]);
@@ -130,7 +130,10 @@ namespace nsfw
 
 		// should load a texture from a file, use makeTexture to alloc, and then copy filedata in
 		bool loadTexture(const char *name, const char *path);
-	
+		
+		//Load a vertex shader from a file
+		bool loadShader(const char *name, const char *vpath);
+
 		// should load a shader from file [vpath, fpath]
 		bool loadShader(const char *name, const char *vpath, const char *fpath);
 
@@ -138,7 +141,7 @@ namespace nsfw
 		bool loadShader(const char *name, const char *vpath, const char *gpath, const char *fpath);
 
 		// should load an update shader from file with help of overloaded loadShader function
-		bool createUpdateShader();
+		bool createUpdateShader(const char *name, const char* vpath, float lifeMin, float lifeMax);
 
 		// should load from an FBX, adding assets to the library as they are discovered
 		bool loadFBX(const char *name, const char *path);

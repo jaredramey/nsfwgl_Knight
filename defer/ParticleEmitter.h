@@ -118,7 +118,6 @@ public:
 				curParticle->transform[3].z += curParticle->velocity.z * deltaTime;
 			}
 
-			// todo@terry: billboard the particles
 		}
 	}
 };

@@ -26,9 +26,9 @@ namespace nsfw
 		enum Offsets
 		{
 			POSITION_OFFSET = 0,
-			VELOCITY_OFFSET = POSITION_OFFSET + sizeof(position),
-			LIFETIME_OFFSET = VELOCITY_OFFSET + sizeof(velocity),
-			LIFESPAN_OFFSET = LIFETIME_OFFSET + sizeof(lifeTime),
+			VELOCITY_OFFSET = POSITION_OFFSET + sizeof(glm::vec4),
+			LIFETIME_OFFSET = VELOCITY_OFFSET + sizeof(glm::vec3),
+			LIFESPAN_OFFSET = LIFETIME_OFFSET + sizeof(float),
 		};
 
 	};

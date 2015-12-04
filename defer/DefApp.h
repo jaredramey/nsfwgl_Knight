@@ -14,6 +14,7 @@ class CPass;
 class SPassPre;
 class SPassPost;
 class ParticleEmitter;
+class GPUParticleEmitter;
 
 class DeferredApplication : public nsfw::Application
 {
@@ -34,6 +35,7 @@ class DeferredApplication : public nsfw::Application
 	* Particles
 	*/
 	ParticleEmitter *m_testParticle;
+	GPUParticleEmitter *m_GPUParticle;
 
 	/*
 	* Lights
