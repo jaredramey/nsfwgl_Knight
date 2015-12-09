@@ -58,7 +58,7 @@ void DeferredApplication::onInit()
 	a.loadShader("CompPass", "./shaders/compVert.txt", "./shaders/compFrag.txt");
 	a.loadShader("ShadowPassPre", "./shaders/shadowPrepVert.txt", "./shaders/shadowPrepFrag.txt");
 	a.loadShader("ShadowPassPost", "./shaders/shadowRendVert.txt", "./shaders/shadowRendFrag.txt");
-	a.loadShader("GPUParticleReg", "./shaders/", "./shaders/", "./shaders/");
+	a.loadShader("GPUParticleReg", "./shaders/gpuVert.txt", "./shaders/gpuGeom.txt", "./shaders/gpuFrag.txt");
 
 	// Load any other textures and geometry we want to use
 	a.loadFBX("Soulspear", "./resources/models/soulspear/soulspear.fbx");
