@@ -59,4 +59,10 @@ public:
 	void onTerm();
 	void onPlay();
 	void UpdateFlyCamControls(float deltaTime, float moveSpeed);
+	void UpdateRenderFlags();
+
+	//Bools to flag the passes
+	bool lightIsActive = true;
+	bool geomIsActive = true;
+	bool shadowIsActive = true;
 };
