@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Geometry.h"
 #include "ParticleEmitter.h"
+#include "GPUParticleEmitter.h"
 
 class GPass : public nsfw::RenderPass
 {
@@ -66,5 +67,11 @@ public:
 
 		glBindVertexArray(*g.mesh);
 		glDrawElements(GL_TRIANGLES, *g.tris, GL_UNSIGNED_INT, 0);
+	}
+
+	//for GPU based particles
+	void draw(Camera &c, GPUParticleEmitter &e)
+	{
+		e.Draw(glfwGetTime(), c.GetWorldTransform(), c.GetViewProjection());
 	}
 };

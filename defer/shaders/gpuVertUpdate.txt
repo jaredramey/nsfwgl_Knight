@@ -30,19 +30,18 @@ float rand(uint seed, float range)
 void main()
 {
 	position = Position + Velocity * deltaTime;
-	velocity = Velocity
+	velocity = Velocity;
 	lifetime = Lifetime + deltaTime;
 	lifespan = Lifespan;
 	
-	//emit a new particle as soon as it dies
 	if(lifetime > lifespan)
 	{
-		uit seed = uint(time*1000.0) + uint(gl_VertexID);
+		uint seed = uint(time*1000.0) + uint(gl_VertexID);
 		velocity.x = rand(seed++, 2) -1;
 		velocity.y = rand(seed++, 2) -1;
 		velocity.z = rand(seed++, 2) -1;
 		velocity = normalize(velocity);
-		position = emitterPosition;
+		position = emmitterPosition;
 		lifetime = 0;
 		lifespan = rand(seed++, lifeMax - lifeMin) + lifeMin;
 	}

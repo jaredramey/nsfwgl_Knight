@@ -97,10 +97,13 @@ void nsfw::Window::term()
 float nsfw::Window::getTime() const
 {
 	//TODO();
-	cT = glfwGetTime();	//Current Time
+	/*cT = glfwGetTime();	//Current Time
 	dT = cT - nT;			//Delta Time
 	nT = cT;				//New Time
-
+	*/
+	float temp = cT;
+	cT = glfwGetTime();
+	dT = cT - temp;
 	return dT;
 	//return dT;	//Return Delta Time
 }
@@ -117,7 +120,8 @@ bool nsfw::Window::getKey(unsigned k) const
 }
 
 bool nsfw::Window::getShouldClose() const
-{return glfwWindowShouldClose(window);
+{
+	return glfwWindowShouldClose(window);
 }
 
 unsigned nsfw::Window::getWidth() const
