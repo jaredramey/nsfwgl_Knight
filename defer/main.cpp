@@ -110,7 +110,7 @@ void DeferredApplication::onPlay()
 
 	//GPU Test Particle
 	m_GPUParticle->Init(1000000, .1f, 5.0f, 1, 10, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
-	m_GPUParticle->SetPosition(glm::vec3(0, 10, 0));
+	m_GPUParticle->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	/*
 	* Filling out Geometry Data 
