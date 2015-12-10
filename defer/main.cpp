@@ -63,7 +63,7 @@ void DeferredApplication::onInit()
 
 	// Load any other textures and geometry we want to use
 	a.loadFBX("Soulspear", "./resources/models/soulspear/soulspear.fbx");
-	a.loadOBJ("Bunny", "./resources/stanford_objs/bunny.obj");
+	//a.loadOBJ("Bunny", "./resources/stanford_objs/bunny.obj");
 	a.loadTexture("crate_Sample", "./resources/textures/sample.JPG");
 
 	m_camera = new Camera;
@@ -95,7 +95,7 @@ void DeferredApplication::onPlay()
 
 	m_lightP->color			 = glm::vec3(1.f, 1.f, 0.0f);
 	m_lightP->position		 = glm::vec4(1, 2, 2, 1);
-	m_lightP->attenuation.kC = 0;
+	m_lightP->attenuation.kC = 10;
 
 	/*
 	* Filling out Particle Data
@@ -109,8 +109,8 @@ void DeferredApplication::onPlay()
 	m_testParticle->velocity = glm::vec3(0, 2, 0);
 
 	//GPU Test Particle
-	m_GPUParticle->Init(1000000, .1f, 5.0f, 1, 10, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
-	m_GPUParticle->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	m_GPUParticle->SetPosition(glm::vec3(10, 10, 10));
+	m_GPUParticle->Init(100, .1f, 5.0f, 1, 10, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
 
 	/*
 	* Filling out Geometry Data 
@@ -139,7 +139,7 @@ void DeferredApplication::onPlay()
 	m_bunny->mesh	   = "Bunny";
 	m_bunny->tris	   = "Bunny";
 	m_bunny->diffuse   = "White";
-	m_bunny->normal    = "Blue";
+	m_bunny->normal    = "DefaultNormal";
 	m_bunny->specular  = "White";
 	m_bunny->specPower = 128.f;
 	m_bunny->transform = glm::translate(glm::mat4(1), glm::vec3(-10, 0, 2));
@@ -147,8 +147,8 @@ void DeferredApplication::onPlay()
 	//floor
 	m_floor->mesh	   = "Quad";
 	m_floor->tris	   = "Quad";
-	m_floor->diffuse   = "White";
-	m_floor->normal	   = "Blue";
+	m_floor->diffuse   = "Blue";
+	m_floor->normal	   = "DefaultNormal";
 	m_floor->specular  = "White";
 	m_floor->specPower = 40.0f;
 	m_floor->transform = glm::rotate(90.0f, glm::vec3(-1, 0, 0)) * glm::scale(glm::vec3(10, 10, 1));
@@ -186,9 +186,9 @@ void DeferredApplication::onStep()
 	{
 		m_geometryPass->draw(*m_camera, *m_soulspear);
 		m_geometryPass->draw(*m_camera, *m_soulspear2);
-		m_geometryPass->draw(*m_camera, *m_bunny);
+		//m_geometryPass->draw(*m_camera, *m_bunny);
 		m_geometryPass->draw(*m_camera, *m_floor);
-		m_geometryPass->draw(*m_camera, *m_testParticle);
+		//m_geometryPass->draw(*m_camera, *m_testParticle);
 		m_geometryPass->draw(*m_camera, *m_GPUParticle);
 	}
 	m_geometryPass->post();
@@ -201,7 +201,7 @@ void DeferredApplication::onStep()
 	{
 		m_shadowPre->draw(*m_light, *m_soulspear);
 		m_shadowPre->draw(*m_light, *m_soulspear2);
-		m_shadowPre->draw(*m_light, *m_bunny);
+		//m_shadowPre->draw(*m_light, *m_bunny);
 		m_shadowPre->draw(*m_light, *m_floor);
 	}
 	m_shadowPre->post();
@@ -209,16 +209,20 @@ void DeferredApplication::onStep()
 	/*
 	* LIGHT PASSES
 	*/
-	m_directionalLightPass->prep();
+	
 	if (lightIsActive)
 	{
+		// Shadow stuff in directional light
+		m_directionalLightPass->prep();
 		m_directionalLightPass->draw(*m_camera, *m_light);
+		m_directionalLightPass->post();
 
+		// Specularity from spotlight
 		m_spotLightPass->prep();
 		m_spotLightPass->draw(*m_camera, *m_lightP);
 		m_spotLightPass->post();
 	}
-	m_directionalLightPass->post();
+	
 
 	/*
 	* COMPOSITE PASSES

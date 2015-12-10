@@ -64,6 +64,7 @@ public:
 		setUniform("Model",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(g.transform));
 
 		setUniform("Diffuse",		nsfw::UNIFORM::TEX2,  g.diffuse,  0);
+		setUniform("Normal",		nsfw::UNIFORM::TEX2,  g.normal,   1);
 
 		glBindVertexArray(*g.mesh);
 		glDrawElements(GL_TRIANGLES, *g.tris, GL_UNSIGNED_INT, 0);

@@ -66,7 +66,7 @@ bool nsfw::Assets::makeVAO(const char *name, const struct Vertex *verts, unsigne
 
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 1));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 2));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 2));
 	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 3));
 
 	glBindVertexArray(0);
@@ -520,7 +520,7 @@ bool nsfw::Assets::loadOBJ(const char * name, const char * path)
 				x = mesh.normals[normalIndex++];
 				y = mesh.normals[normalIndex++];
 				z = mesh.normals[normalIndex++];
-				vertex.normal = vec4(x, y, z, 1);
+				vertex.normal = vec4(x, y, z, 0);
 			}
 
 			if (hasUVs)
@@ -553,6 +553,9 @@ void nsfw::Assets::init()
 	
 	char b[] = { 0,0,255,255 };
 	makeTexture("Blue", 1, 1, GL_RGBA, b);
+
+	char n[] = { 127, 127, 255, 0 };
+	makeTexture("DefaultNormal", 1, 1, GL_RGBA, b);
 }
 
 void nsfw::Assets::term()

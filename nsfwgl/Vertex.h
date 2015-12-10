@@ -84,10 +84,10 @@ namespace nsfw
 
 	const Vertex QuadVerts[] =
 	{
-		{ vec4(-1, 1, 0, 1), backward,  left, vec2(0,1) },
-		{ vec4( 1, 1, 0, 1), backward,  left, vec2(1,1) },
-		{ vec4( 1,-1, 0, 1), backward,  left, vec2(1,0) },
-		{ vec4(-1,-1, 0, 1), backward,  left, vec2(0,0) },
+		{ vec4(-1, 1, 0, 1), forward,  left, vec2(0,1) },
+		{ vec4( 1, 1, 0, 1), forward,  left, vec2(1,1) },
+		{ vec4( 1,-1, 0, 1), forward,  left, vec2(1,0) },
+		{ vec4(-1,-1, 0, 1), forward,  left, vec2(0,0) },
 	};
 
 	const unsigned QuadTris[] = { 3,1,0, 3,2,1 };
