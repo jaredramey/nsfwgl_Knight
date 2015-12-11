@@ -189,7 +189,7 @@ void DeferredApplication::onStep()
 		//m_geometryPass->draw(*m_camera, *m_bunny);
 		m_geometryPass->draw(*m_camera, *m_floor);
 		//m_geometryPass->draw(*m_camera, *m_testParticle);
-		m_geometryPass->draw(*m_camera, *m_GPUParticle);
+		//m_geometryPass->draw(*m_camera, *m_GPUParticle);
 	}
 	m_geometryPass->post();
 

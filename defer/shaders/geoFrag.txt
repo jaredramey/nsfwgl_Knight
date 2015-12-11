@@ -4,9 +4,12 @@ in vec4 vPosition;
 in vec4 vNormal;
 in vec2 vTexCoord;
 
+in mat4 TBN;
+
 uniform sampler2D Diffuse;
 uniform float SpecularPower;
 
+uniform sampler2D NormalTex;
 
 layout(location=0) out vec3 gpassAlbedo;
 layout(location=1) out vec3 gpassPosition;
@@ -14,11 +17,15 @@ layout(location=2) out vec3 gpassNormal;
 
 void main()
 {
+	vec4 NormalSample = vec4( normalize( texture(NormalTex, vTexCoord).xyz * 2 - 1), 0);
+	
+	
+	
 	gpassAlbedo = texture(Diffuse, vTexCoord).xyz;
 
 	gpassPosition = vPosition.xyz;
 
-	gpassNormal = vNormal.xyz;	
+	gpassNormal = (TBN * NormalSample).xyz;	
 }
 
 /*
