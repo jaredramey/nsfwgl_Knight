@@ -31,10 +31,13 @@ public:
 	}
 
 
-	void draw(const Camera &c, const LightD &l)
+	void draw(const Camera &c, const LightD &l, float deltaTime)
 	{
 		setUniform("Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.GetProjection()));
 		setUniform("View",       nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.GetView()));
+
+		//Moving the light around (attempting too)
+		setUniform("deltaTime", nsfw::UNIFORM::TYPE::FLO1, &deltaTime);
 		
 		setUniform("LightProjection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(l.getProjection()));
 		setUniform("LightView", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(l.getView()));

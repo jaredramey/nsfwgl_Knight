@@ -1,3 +1,4 @@
+#define GLM_SWIZZLE
 
 #include "ogl\gl_core_4_4.h"
 
@@ -18,6 +19,7 @@
 #include "SPassPost.h"
 
 using namespace nsfw;
+
 
 int main()
 {
@@ -176,7 +178,10 @@ void DeferredApplication::onStep()
 	m_soulspear->update();
 	m_soulspear2->update();
 	m_testParticle->update();
-	
+	glm::vec4 rotateVec = (glm::rotate(delta, m_light->direction) * vec4(0.f, 0.f, 1.f, 0.f));
+	//m_light->direction = (glm::rotate(delta, m_light->direction) * vec4(0.f, 1.f, 0.f, 0.f)).xyz;
+	m_light->direction = (glm::rotate(m_light->direction, delta * 100, vec3(0, 1, 0)));
+
 	/*
 	* ================================================================================== *
 	* GEOMETRY PASS
@@ -226,7 +231,7 @@ void DeferredApplication::onStep()
 	{
 		// Shadow stuff in directional light
 		m_directionalLightPass->prep();
-		m_directionalLightPass->draw(*m_camera, *m_light);
+		m_directionalLightPass->draw(*m_camera, *m_light, delta);
 		m_directionalLightPass->post();
 	}
 

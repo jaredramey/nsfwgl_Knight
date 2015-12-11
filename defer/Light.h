@@ -22,7 +22,10 @@ struct LightD
 		return glm::ortho<float>(-10, 10, -10, 10, -10, 10);
 	}
 
-	void update() {}
+	void update() 
+	{
+		
+	}
 };
 
 struct LightP

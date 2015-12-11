@@ -6,6 +6,7 @@ layout(location=2) in vec4 Tangent;
 layout(location=3) in vec2 TexCoord;
 
 out vec2 vTexCoord;
+uniform float deltaTime;
 
 void main()
 {
