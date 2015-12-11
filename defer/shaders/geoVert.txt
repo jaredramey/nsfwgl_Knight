@@ -9,12 +9,12 @@ out vec4 vPosition;
 out vec4 vNormal;
 out vec2 vTexCoord;
 
-out mat3 TBN;
-
 uniform mat4 View;
 uniform mat4 Projection;
 uniform mat4 ProjectionView;
 uniform mat4 Model;
+
+uniform sampler2D NormalTex;
 
 void main()
 {
@@ -22,15 +22,14 @@ void main()
 	vTexCoord = TexCoord;
 	gl_Position =  Projection * View * Model * Position;
 	
+	vec4 NormalSample = vec4( normalize( texture(NormalTex, TexCoord).xyz * 2 - 1), 0);
+
 	
+	vec4 dBiTangent = vec4( normalize(cross(Normal.xyz, Tangent.xyz) ), 0);
 	
-	vNormal = normalize(View * Model * Normal);
-	
-	vec3 dNormal    = normalize(View * Model * Normal).xyz;
-	vec3 dTangent   = normalize(View * Model * Tangent).xyz;
-	vec3 dBiTangent = normalize(cross(vNormal.xyz,dTangent.xyz));
-	
-	TBN = mat3(dTangent, dBiTangent, dNormal);	
+	mat4 TBN = Model * mat4(Tangent, dBiTangent, Normal, vec4(0, 0, 0, 1));
+
+	vNormal = View * TBN * NormalSample;
 }
 
 /*

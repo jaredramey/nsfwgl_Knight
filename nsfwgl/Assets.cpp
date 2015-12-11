@@ -443,6 +443,7 @@ bool nsfw::Assets::loadFBX(const char * name, const char * path)
 			v.position = Vert.position;
 			v.normal = Vert.normal;
 			v.texCoord = Vert.texCoord1;
+			v.tangent = Vert.tangent;
 			verts.push_back(v);
 		}
 
@@ -554,7 +555,7 @@ void nsfw::Assets::init()
 	char b[] = { 0,0,255,255 };
 	makeTexture("Blue", 1, 1, GL_RGBA, b);
 
-	char n[] = { 127, 127, 255, 0 };
+	char n[] = { 127, 127, 255, 127 };
 	makeTexture("DefaultNormal", 1, 1, GL_RGBA, b);
 }
 
