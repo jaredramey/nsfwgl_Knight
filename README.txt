@@ -3,13 +3,16 @@
 ||======================================================||
 	Movement:
 		- W = Move Forward
-		- S = Move Down
+		- S = Move Backwards
 		- A = Move Left
 		- D = Move Right
+		- L-Shift = Down
+		- Space = Up
 	Switches:
-		- J = Shadows
-		- K = Geometry
-		- L = Lights
+		- 1 = Spears
+		- 2 = Particles
+		- 3 = Shadows
+		- 4 = Specularity
 	Ect:
 		- Esc = close program
 		

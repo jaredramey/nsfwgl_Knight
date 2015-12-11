@@ -110,7 +110,7 @@ void DeferredApplication::onPlay()
 
 	//GPU Test Particle
 	m_GPUParticle->SetPosition(glm::vec3(10, 10, 10));
-	m_GPUParticle->Init(100, .1f, 5.0f, 1, 10, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
+	m_GPUParticle->Init(1000, .1f, 5.0f, 1, 10, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
 
 	/*
 	* Filling out Geometry Data 
@@ -177,46 +177,65 @@ void DeferredApplication::onStep()
 	m_soulspear2->update();
 	m_testParticle->update();
 	
-	//TODO_D("Draw all of our renderpasses!");
 	/*
+	* ================================================================================== *
 	* GEOMETRY PASS
+	* ================================================================================== *
 	*/
 	m_geometryPass->prep();
-	if (geomIsActive)
+	if (SpearsIsActive)
 	{
 		m_geometryPass->draw(*m_camera, *m_soulspear);
 		m_geometryPass->draw(*m_camera, *m_soulspear2);
-		//m_geometryPass->draw(*m_camera, *m_bunny);
-		m_geometryPass->draw(*m_camera, *m_floor);
-		//m_geometryPass->draw(*m_camera, *m_testParticle);
-		//m_geometryPass->draw(*m_camera, *m_GPUParticle);
 	}
+		//m_geometryPass->draw(*m_camera, *m_bunny);
+	m_geometryPass->draw(*m_camera, *m_floor);
+		//m_geometryPass->draw(*m_camera, *m_testParticle);
+	if (ParticleIsActive)
+	{
+		m_geometryPass->draw(*m_camera, *m_GPUParticle);
+	}
+	
 	m_geometryPass->post();
 
 	/*
+	* ================================================================================== *
 	* SHADOW PASSES	
+	* ================================================================================== *
 	*/
 	m_shadowPre->prep();
-	if (shadowIsActive)
+	if (ShadowIsActive)
 	{
-		m_shadowPre->draw(*m_light, *m_soulspear);
-		m_shadowPre->draw(*m_light, *m_soulspear2);
+		if (SpearsIsActive)
+		{
+			m_shadowPre->draw(*m_light, *m_soulspear);
+			m_shadowPre->draw(*m_light, *m_soulspear2);
+		}
 		//m_shadowPre->draw(*m_light, *m_bunny);
 		m_shadowPre->draw(*m_light, *m_floor);
 	}
 	m_shadowPre->post();
 
 	/*
+	* ================================================================================== *
 	* LIGHT PASSES
+	* ================================================================================== *
 	*/
 	
-	if (lightIsActive)
+	if (ShadowIsActive)
 	{
 		// Shadow stuff in directional light
 		m_directionalLightPass->prep();
 		m_directionalLightPass->draw(*m_camera, *m_light);
 		m_directionalLightPass->post();
+	}
 
+	/*
+	 * Shadow calculation and Specularity calculations sperated for easier trigger debugging
+	*/
+
+	if (SpecIsActive)
+	{
 		// Specularity from spotlight
 		m_spotLightPass->prep();
 		m_spotLightPass->draw(*m_camera, *m_lightP);
@@ -225,7 +244,9 @@ void DeferredApplication::onStep()
 	
 
 	/*
+	* ================================================================================== *
 	* COMPOSITE PASSES
+	* ================================================================================== *
 	*/
 	m_compositePass->prep();
 	m_compositePass->draw();
@@ -254,6 +275,15 @@ void DeferredApplication::onTerm()
 
 void DeferredApplication::UpdateFlyCamControls(float deltaTime, float moveSpeed)
 {
+	/*
+	 * Keys Used:
+	 * W = Forward
+	 * A = Left
+	 * S = Right
+	 * D = Backwards
+	 * L-Shift = Down
+	 * Space = Up
+	*/
 	if (Keyboard::IsKeyPressed(Keyboard::KEY_W) || Keyboard::IsKeyRepeat(Keyboard::KEY_W))
 	{
 		m_camera->Move(moveSpeed * deltaTime);
@@ -270,11 +300,11 @@ void DeferredApplication::UpdateFlyCamControls(float deltaTime, float moveSpeed)
 	{
 		m_camera->Slide(moveSpeed * deltaTime, 0);
 	}
-	if (Keyboard::IsKeyPressed(Keyboard::KEY_E) || Keyboard::IsKeyRepeat(Keyboard::KEY_E))
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_SPACE) || Keyboard::IsKeyRepeat(Keyboard::KEY_SPACE))
 	{
 		m_camera->Slide(0, moveSpeed * deltaTime);
 	}
-	if (Keyboard::IsKeyPressed(Keyboard::KEY_Q) || Keyboard::IsKeyRepeat(Keyboard::KEY_Q))
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_LEFT_SHIFT) || Keyboard::IsKeyRepeat(Keyboard::KEY_LEFT_SHIFT))
 	{
 		m_camera->Slide(0, -moveSpeed * deltaTime);
 	}
@@ -284,27 +314,34 @@ void DeferredApplication::UpdateRenderFlags()
 {
 	/*
 	* Keys Used:
-	* L (Lights)
-	* K (Geometry)
-	* J (Shadows)
+	* 1 = Spears
+	* 2 = Particles
+	* 3 = Shadows
+	* 4 = Specularity
 	*/
 
-	//Lights
-	if(Keyboard::IsKeyPressed(Keyboard::KEY_L) || Keyboard::IsKeyRepeat(Keyboard::KEY_L))
+	//Spears
+	if(Keyboard::IsKeyPressed(Keyboard::KEY_1) || Keyboard::IsKeyRepeat(Keyboard::KEY_1))
 	{
-		lightIsActive = !lightIsActive;
+		SpearsIsActive = !SpearsIsActive;
 	}
 
-	//Geometry
-	if (Keyboard::IsKeyPressed(Keyboard::KEY_K) || Keyboard::IsKeyRepeat(Keyboard::KEY_K))
+	//Particles
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_2) || Keyboard::IsKeyRepeat(Keyboard::KEY_2))
 	{
-		geomIsActive = !geomIsActive;
+		ParticleIsActive = !ParticleIsActive;
 	}
 
 	//Shadows
-	if (Keyboard::IsKeyPressed(Keyboard::KEY_J) || Keyboard::IsKeyRepeat(Keyboard::KEY_J))
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_3) || Keyboard::IsKeyRepeat(Keyboard::KEY_3))
 	{
-		shadowIsActive = !shadowIsActive;
+		ShadowIsActive = !ShadowIsActive;
+	}
+
+	//Specularity
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_4) || Keyboard::IsKeyRepeat(Keyboard::KEY_4))
+	{
+		SpecIsActive = !SpecIsActive;
 	}
 
 	//check to see if window should close

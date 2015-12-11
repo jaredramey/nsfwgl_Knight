@@ -62,7 +62,8 @@ public:
 	void UpdateRenderFlags();
 
 	//Bools to flag the passes
-	bool lightIsActive = true;
-	bool geomIsActive = true;
-	bool shadowIsActive = true;
+	bool SpearsIsActive = true;
+	bool ParticleIsActive = true;
+	bool ShadowIsActive = true;
+	bool SpecIsActive = true;
 };
