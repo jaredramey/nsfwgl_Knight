@@ -1,5 +1,5 @@
 ||======================================================||
-||					CONTROLS							||
+||			CONTROLS			||
 ||======================================================||
 	Movement:
 		- W = Move Forward
@@ -17,7 +17,7 @@
 		- Esc = close program
 		
 ||======================================================||
-||					POST MORTEM							||
+||			POST MORTEM			||
 ||======================================================||
 
 	The goal of nsfwgl (not suitable for work graphics library), and the defer project included, was to create a basic framework on which to make 
@@ -46,5 +46,4 @@
 	else in the class as they can and we were all working on the same project so in all reality, each of these projects is a coalition of everyones work.
 	Major help for the start of this project however goes to the teacher Esme for creating the base that we all worked off of.
 	
-	For personal growth in the future, I might take this project and attempt it aggain on my own starting from the ground up. But this would only be if I really
-	need my own framework or if i'm really bored. For I can tell one thing about my career; I really don't want to be a graphics programmer.
+	For personal growth in the future, I might take this project and attempt it aggain on my own starting from the ground up in order to solidify what I've learned during this project.
